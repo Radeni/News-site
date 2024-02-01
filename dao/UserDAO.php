@@ -31,7 +31,7 @@ class UserDAO {
         $stmt = $this->dbConnection->prepare($query);
 
         $stmt->bindValue(':username', $user->getUsername(), PDO::PARAM_STR);
-        $stmt->bindValue(':password', $user->getPassword(), PDO::PARAM_STR); // Remember to hash passwords in real applications
+        $stmt->bindValue(':password', password_hash($user->getPassword(), PASSWORD_BCRYPT), PDO::PARAM_STR);
         $stmt->bindValue(':tip', $user->getTip(), PDO::PARAM_STR);
 
         $stmt->execute();
