@@ -108,3 +108,13 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `news`.`User`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `news`;
+INSERT INTO `news`.`User` (`idKorisnik`, `Username`, `Password`, `Tip`) VALUES (1, 'admin', '$2a$12$imNXkN62wcomZpbkRV66jug.XHWvwVqQnTvOdawdNdvtQIrlyoP8O', 'glavni_urednik');
+
+COMMIT;
+
