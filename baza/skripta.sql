@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `news`.`User` (
   `idKorisnik` INT NOT NULL AUTO_INCREMENT,
   `Username` VARCHAR(80) NOT NULL,
   `Password` VARCHAR(100) NOT NULL,
-  `Tip` ENUM("novinar", "urednik", "korisnik") NOT NULL,
+  `Tip` ENUM("novinar", "urednik", "glavni_urednik") NOT NULL,
   PRIMARY KEY (`idKorisnik`),
   UNIQUE INDEX `idKorisnik_UNIQUE` (`idKorisnik` ASC) VISIBLE)
 ENGINE = InnoDB;
