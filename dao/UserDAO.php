@@ -27,6 +27,20 @@ class UserDAO {
         return null;
     }
 
+    public function loginUser($username, $password) {
+        $query = "SELECT * FROM User WHERE Username = :username";
+        $stmt = $this->dbConnection->prepare($query);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row && password_verify($password, $row['Password'])) {
+            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Tip']);
+        }
+
+        return null;
+    }
+
     public function addUser(User $user) {
         $query = "INSERT INTO User (Username, Password, Tip) VALUES (:username, :password, :tip)";
         $stmt = $this->dbConnection->prepare($query);

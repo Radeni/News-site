@@ -12,10 +12,10 @@ if (Input::exists()) {
 
         if ($validation->passed()) {
             // Login user
-            $user = new User();
-            $login = $user->login(Input::get('email'), Input::get('password'));
+            $userService = UserService::getInstance(DB::getInstance());
+            $user = $userService->loginUser(Input::get('email'), Input::get('password'));
 
-            if ($login) {
+            if ($user) {
                 Redirect::to('index.php');
             } else {
                 echo '<p>Sorry, logging in failed';

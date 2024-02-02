@@ -32,7 +32,9 @@ class UserService {
     public function deleteUser($id) {
         return $this->userDAO->deleteUser($id);
     }
-
+    public function loginUser($username, $password) {
+        return $this->userDAO->loginUser($username, $password);
+    }
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once 'functions/user_type.php';
-class User
+class UserManager
 {
     private $_db,
             $_data,
@@ -40,15 +40,8 @@ class User
         if (count($fields) < 2) {
             throw new Exception('Nedovoljno polja');
         }
-        if (!in_array($tip_korisnika, array('korisnik', 'admin'))) {
-            throw new Exception('Nepostojeca tabela');
-        }
-        if ($tip_korisnika == 'korisnik') {
-            $tip_db = 1;
-        } elseif ($tip_korisnika == 'admin') {
-            $tip_db = 2;
-        } else {
-            throw new Exception('Unreachable');
+        if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
+            throw new Exception('Nepostojeci tip korisnika');
         }
         if (!$db->insert('user', array('tip' => $tip_db))) {
             throw new Exception('Desio se problem tokom kreiranja naloga.');
