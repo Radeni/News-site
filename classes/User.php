@@ -50,11 +50,11 @@ class User
         } else {
             throw new Exception('Unreachable');
         }
-        if (!$db->insert('nalozi', array('tip' => $tip_db))) {
+        if (!$db->insert('user', array('tip' => $tip_db))) {
             throw new Exception('Desio se problem tokom kreiranja naloga.');
         }
-        $id = $db->query('SELECT * FROM nalozi ORDER BY nalog_id DESC LIMIT 1')->first()->nalog_id;
-        $fields['nalog_id'] = $id;
+        $id = $db->query('SELECT * FROM user ORDER BY idKorisnik DESC LIMIT 1')->first()->idKorisnik;
+        $fields['idKorisnik'] = $id;
         if (!$db->insert($tip_korisnika, $fields)) {
             throw new Exception('Desio se problem tokom kreiranja naloga.');
         }
@@ -82,8 +82,8 @@ class User
             // if user had a numeric username this FAILS...
             $data = '';
             if (is_numeric($user)) {
-                $field = 'nalog_id';
-                $this->_permissionLevel = $this->_db->get('nalozi', array($field, '=', $user))->results()[0]->tip;
+                $field = 'idKorisnik';
+                $this->_permissionLevel = $this->_db->get('user', array($field, '=', $user))->results()[0]->Tip;
                 if ($this->_permissionLevel == 1) {
                     $data = $this->_db->get('korisnik', array($field, '=', $user))->results();
                 }
@@ -116,12 +116,12 @@ class User
     {
         // check if username has been defined
         if (!$email && !$password && $this->exists()) {
-            Session::put($this->_sessionName, $this->data()->nalog_id);
+            Session::put($this->_sessionName, $this->data()->idKorisnik);
         } else {
             $user = $this->find($email);
             if ($user) {
                 if (password_verify($password, $this->data()->password)) {
-                    Session::put($this->_sessionName, $this->data()->nalog_id);
+                    Session::put($this->_sessionName, $this->data()->idKorisnik);
                     $this->_isLoggedIn = true;
                     return true;
                 }
