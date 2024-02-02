@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class VestDAO {
     private static $instance = null;
     private $dbConnection;

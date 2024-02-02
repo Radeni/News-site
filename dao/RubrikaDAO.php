@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class RubrikaDAO {
     private $dbConnection;
     private static $instance = null;

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class VestService {
     private $vestDAO;
     private static $instance = null;

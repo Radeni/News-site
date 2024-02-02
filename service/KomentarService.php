@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class KomentarService {
     private $komentarDAO;
     private static $instance = null;

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class UserService {
     private $userDAO;
     private static $instance = null;

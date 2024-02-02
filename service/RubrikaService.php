@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class RubrikaService {
     private $rubrikaDAO;
     private static $instance = null;
