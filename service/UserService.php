@@ -2,43 +2,44 @@
 declare(strict_types=1);
 require_once 'dao/UserDAO.php';
 class UserService {
-    private $userDAO;
     private static $instance = null;
-
-    private function __construct($dbConnection) {
-        $this->userDAO = UserDAO::getInstance($dbConnection);
+    private function __construct() {
+        // Prevent instantiation
     }
-
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new UserService($dbConnection);
+            self::$instance = new UserService();
         }
         return self::$instance;
     }
 
     public function getUserById($id) {
-        return $this->userDAO->getUserById($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->getUserById($connection, $id);
     }
 
     public function getUserByUsername($username) {
-        return $this->userDAO->getUserByUsername($username);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->getUserByUsername($connection, $username);
     }
 
-    public function createUser($username, $password, $tip) {
-        $user = new User(null, $username, $password, $tip);
-        return $this->userDAO->addUser($user);
+    public function createUser(User $user) {
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->addUser($connection, $user);
     }
 
-    public function updateUser($idKorisnik, $username, $password, $tip) {
-        $user = new User($idKorisnik, $username, $password, $tip);
-        return $this->userDAO->updateUser($user);
+    public function updateUser(User $user) {
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->updateUser($connection, $user);
     }
 
     public function deleteUser($id) {
-        return $this->userDAO->deleteUser($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->deleteUser($connection, $id);
     }
     public function loginUser($username, $password) {
-        return $this->userDAO->loginUser($username, $password);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserDAO::getInstance()->loginUser($connection, $username, $password);
     }
     // Prevent cloning and unserialization
     private function __clone() { }

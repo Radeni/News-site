@@ -13,7 +13,7 @@ if (Input::exists()) {
 
         if ($validation->passed()) { 
             // Login user
-            $userService = UserService::getInstance(DB::getInstance()::pdo());
+            $userService = UserService::getInstance();
             $user = $userService->loginUser(Input::get('email'), Input::get('password'));
 
             if ($user) {

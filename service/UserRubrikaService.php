@@ -1,30 +1,31 @@
 <?php
 declare(strict_types=1);
+require_once 'dao/UserRubrikaDAO.php';
 class UserRubrikaService {
-    private $userRubrikaDAO;
     private static $instance = null;
-
-    private function __construct($dbConnection) {
-        $this->userRubrikaDAO = UserRubrikaDAO::getInstance($dbConnection);
+    private function __construct() {
+        // Prevent instantiation
     }
-
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new UserRubrikaService($dbConnection);
+            self::$instance = new UserRubrikaService();
         }
         return self::$instance;
     }
 
     public function addUserToRubrika($idKorisnik, $idRubrika) {
-        return $this->userRubrikaDAO->addUserToRubrika($idKorisnik, $idRubrika);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserRubrikaDAO::getInstance()->addUserToRubrika($connection, $idKorisnik, $idRubrika);
     }
 
     public function deleteUserFromRubrika($idKorisnik, $idRubrika) {
-        return $this->userRubrikaDAO->deleteUserFromRubrika($idKorisnik, $idRubrika);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserRubrikaDAO::getInstance()->deleteUserFromRubrika($connection, $idKorisnik, $idRubrika);
     }
 
     public function getUserRubrikas($idKorisnik) {
-        return $this->userRubrikaDAO->getUserRubrikas($idKorisnik);
+        $connection = DBManager::getInstance()->getConnection();
+        return UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
     }
 
     // Prevent cloning and unserialization

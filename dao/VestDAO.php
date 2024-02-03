@@ -2,22 +2,19 @@
 declare(strict_types=1);
 class VestDAO {
     private static $instance = null;
-    private $dbConnection;
-
-    private function __construct($dbConnection) {
-        $this->dbConnection = $dbConnection;
+    private function __construct() {
+        // Prevent instantiation
     }
-
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new VestDAO($dbConnection);
+            self::$instance = new VestDAO();
         }
         return self::$instance;
     }
 
-    public function getVestById($id) {
+    public function getVestById($dbConnection, $id) {
         $query = "SELECT * FROM Vest WHERE idVest = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -29,9 +26,9 @@ class VestDAO {
         return null;
     }
 
-    public function addVest(Vest $vest) {
+    public function addVest($dbConnection, Vest $vest) {
         $query = "INSERT INTO Vest (Naslov, Tekst, Tagovi, Datum, Lajkovi, Dislajkovi, Status, idRubrika) VALUES (:naslov, :tekst, :tagovi, :datum, :lajkovi, :dislajkovi, :status, :idRubrika)";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
     
         // Bind values with explicit data types
         $stmt->bindValue(':naslov', $vest->getNaslov(), PDO::PARAM_STR);
@@ -44,22 +41,22 @@ class VestDAO {
         $stmt->bindValue(':idRubrika', $vest->getIdRubrika(), PDO::PARAM_INT);
     
         $stmt->execute();
-        return $this->dbConnection->lastInsertId();
+        return $dbConnection->lastInsertId();
     }
     
 
-    public function updateVest(Vest $vest) {
+    public function updateVest($dbConnection, Vest $vest) {
         $query = "UPDATE Vest SET Naslov = :naslov, Tekst = :tekst, Tagovi = :tagovi, Datum = :datum, Lajkovi = :lajkovi, Dislajkovi = :dislajkovi, Status = :status WHERE idVest = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindValue(':id', $vest->getIdVest());
 
         $stmt->execute();
         return $stmt->rowCount();
     }
 
-    public function deleteVest($id) {
+    public function deleteVest($dbConnection, $id) {
         $query = "DELETE FROM Vest WHERE idVest = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
         $stmt->execute();

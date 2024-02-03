@@ -8,7 +8,7 @@ class Validate
             $_db = null;
     public function __construct()
     {
-        $this->_db = DB::getInstance();
+        $this->_db = DBManager::getInstance();
     }
     public function check($source, $items = array())
     {
@@ -37,10 +37,10 @@ class Validate
                             }
                             break;
                         case 'unique':
-                            $check = $this->_db->get($rule_value, array($item, '=', $value));
-                            if ($check->count()) {
-                                $this->_addError("{$item} vec postoji.");
-                            }
+                            #$check = $this->_db->get($rule_value, array($item, '=', $value));
+                            #if ($check->count()) {
+                            #    $this->_addError("{$item} vec postoji.");
+                            #}
                             break;
                         case 'numeric':
                             if (!is_numeric($value) && $rule_value) {

@@ -2,21 +2,20 @@
 declare(strict_types=1);
 require_once 'data/User.php';
 class UserDAO {
-    private $dbConnection;
     private static $instance = null;
-    private function __construct($dbConnection) {
-        $this->dbConnection = $dbConnection;
+    private function __construct() {
+        // Prevent instantiation
     }
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new UserDAO($dbConnection);
+            self::$instance = new UserDAO();
         }
         return self::$instance;
     }
 
-    public function getUserById($id) {
+    public function getUserById($dbConnection, $id) {
         $query = "SELECT * FROM User WHERE idKorisnik = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -28,9 +27,9 @@ class UserDAO {
         return null;
     }
 
-    public function getUserByUsername($username) {
+    public function getUserByUsername($dbConnection, $username) {
         $query = "SELECT * FROM User WHERE Username = :username";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':username', $username, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -42,9 +41,9 @@ class UserDAO {
         return null;
     }
 
-    public function loginUser($username, $password) {
+    public function loginUser($dbConnection, $username, $password) {
         $query = "SELECT * FROM User WHERE Username = :username";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -56,21 +55,21 @@ class UserDAO {
         return null;
     }
 
-    public function addUser(User $user) {
+    public function addUser($dbConnection, User $user) {
         $query = "INSERT INTO User (Username, Password, Tip) VALUES (:username, :password, :tip)";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':username', $user->getUsername(), PDO::PARAM_STR);
         $stmt->bindValue(':password', password_hash($user->getPassword(), PASSWORD_BCRYPT), PDO::PARAM_STR);
         $stmt->bindValue(':tip', $user->getTip(), PDO::PARAM_STR);
 
         $stmt->execute();
-        return $this->dbConnection->lastInsertId();
+        return $dbConnection->lastInsertId();
     }
 
-    public function updateUser(User $user) {
+    public function updateUser($dbConnection, User $user) {
         $query = "UPDATE User SET Username = :username, Password = :password, Tip = :tip WHERE idKorisnik = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':id', $user->getIdKorisnik(), PDO::PARAM_INT);
 
@@ -78,9 +77,9 @@ class UserDAO {
         return $stmt->rowCount();
     }
 
-    public function deleteUser($id) {
+    public function deleteUser($dbConnection, $id) {
         $query = "DELETE FROM User WHERE idKorisnik = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         $stmt->execute();

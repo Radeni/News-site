@@ -1,36 +1,36 @@
 <?php
 declare(strict_types=1);
+require_once 'dao/KomentarDAO.php';
 class KomentarService {
-    private $komentarDAO;
     private static $instance = null;
-
-    private function __construct($dbConnection) {
-        $this->komentarDAO = KomentarDAO::getInstance($dbConnection);
+    private function __construct() {
+        // Prevent instantiation
     }
-
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new KomentarService($dbConnection);
+            self::$instance = new KomentarService();
         }
         return self::$instance;
     }
 
     public function getKomentarById($id) {
-        return $this->komentarDAO->getKomentarById($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->getKomentarById($connection, $id);
     }
 
-    public function createKomentar($ime, $tekst, $lajkovi, $dislajkovi, $idVest) { 
-        $komentar = new Komentar(null, $ime, $tekst, $lajkovi, $dislajkovi, $idVest);
-        return $this->komentarDAO->addKomentar($komentar);
+    public function createKomentar(Komentar $komentar) { 
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->addKomentar($connection, $komentar);
     }
 
-    public function updateKomentar($idKomentar, $ime, $tekst, $lajkovi, $dislajkovi, $idVest) {
-        $komentar = new Komentar($idKomentar, $ime, $tekst, $lajkovi, $dislajkovi, $idVest);
-        return $this->komentarDAO->updateKomentar($komentar);
+    public function updateKomentar(Komentar $komentar) {
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->updateKomentar($connection, $komentar);
     }
 
     public function deleteKomentar($id) {
-        return $this->komentarDAO->deleteKomentar($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->deleteKomentar($connection, $id);
     }
 
     // Prevent cloning and unserialization

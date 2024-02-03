@@ -1,36 +1,36 @@
 <?php
 declare(strict_types=1);
+require_once 'dao/RubrikaDAO.php';
 class RubrikaService {
-    private $rubrikaDAO;
     private static $instance = null;
-
-    private function __construct($dbConnection) {
-        $this->rubrikaDAO = RubrikaDAO::getInstance($dbConnection);
+    private function __construct() {
+        // Prevent instantiation
     }
-
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new RubrikaService($dbConnection);
+            self::$instance = new RubrikaService();
         }
         return self::$instance;
     }
 
     public function getRubrikaById($id) {
-        return $this->rubrikaDAO->getRubrikaById($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return RubrikaDAO::getInstance()->getRubrikaById($connection, $id);
     }
 
-    public function createRubrika($ime) {
-        $rubrika = new Rubrika(null, $ime);
-        return $this->rubrikaDAO->addRubrika($rubrika);
+    public function createRubrika(Rubrika $rubrika) {
+        $connection = DBManager::getInstance()->getConnection();
+        return RubrikaDAO::getInstance()->addRubrika($connection, $rubrika);
     }
 
-    public function updateRubrika($idRubrika, $ime) {
-        $rubrika = new Rubrika($idRubrika, $ime);
-        return $this->rubrikaDAO->updateRubrika($rubrika);
+    public function updateRubrika(Rubrika $rubrika) {
+        $connection = DBManager::getInstance()->getConnection();
+        return RubrikaDAO::getInstance()->updateRubrika($connection, $rubrika);
     }
 
     public function deleteRubrika($id) {
-        return $this->rubrikaDAO->deleteRubrika($id);
+        $connection = DBManager::getInstance()->getConnection();
+        return RubrikaDAO::getInstance()->deleteRubrika($connection, $id);
     }
 
     // Prevent cloning and unserialization

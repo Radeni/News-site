@@ -1,21 +1,20 @@
 <?php
 declare(strict_types=1);
 class RubrikaDAO {
-    private $dbConnection;
     private static $instance = null;
-    private function __construct($dbConnection) {
-        $this->dbConnection = $dbConnection;
+    private function __construct() {
+        // Prevent instantiation
     }
-    public static function getInstance($dbConnection) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new RubrikaDAO($dbConnection);
+            self::$instance = new RubrikaDAO();
         }
         return self::$instance;
     }
 
-    public function getRubrikaById($id) {
+    public function getRubrikaById($dbConnection, $id) {
         $query = "SELECT * FROM Rubrika WHERE idRubrika = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -27,19 +26,19 @@ class RubrikaDAO {
         return null;
     }
 
-    public function addRubrika(Rubrika $rubrika) {
+    public function addRubrika($dbConnection, Rubrika $rubrika) {
         $query = "INSERT INTO Rubrika (Ime) VALUES (:ime)";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':ime', $rubrika->getIme(), PDO::PARAM_STR);
 
         $stmt->execute();
-        return $this->dbConnection->lastInsertId();
+        return $dbConnection->lastInsertId();
     }
 
-    public function updateRubrika(Rubrika $rubrika) {
+    public function updateRubrika($dbConnection, Rubrika $rubrika) {
         $query = "UPDATE Rubrika SET Ime = :ime WHERE idRubrika = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':id', $rubrika->getIdRubrika(), PDO::PARAM_INT);
         $stmt->bindValue(':ime', $rubrika->getIme(), PDO::PARAM_STR);
@@ -48,9 +47,9 @@ class RubrikaDAO {
         return $stmt->rowCount();
     }
 
-    public function deleteRubrika($id) {
+    public function deleteRubrika($dbConnection, $id) {
         $query = "DELETE FROM Rubrika WHERE idRubrika = :id";
-        $stmt = $this->dbConnection->prepare($query);
+        $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         $stmt->execute();

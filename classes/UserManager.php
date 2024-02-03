@@ -11,7 +11,7 @@ class UserManager
 
     public function __construct($user = null)
     {
-        $this->_db = DB::getInstance();
+        $this->_db = DBManager::getInstance();
 
         $this->_sessionName = Config::get('session/session_name');
 
@@ -39,7 +39,7 @@ class UserManager
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        $userService = UserService::getInstance(DB::getInstance());
+        $userService = UserService::getInstance(DBManager::getInstance());
         $user = $userService->loginUser($username, $password);
         if (!$user) {
             throw new Exception('Desio se problem prilikom kreiranja naloga!');
@@ -50,7 +50,7 @@ class UserManager
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        $userService = UserService::getInstance(DB::getInstance());
+        $userService = UserService::getInstance(DBManager::getInstance());
         if ($userService->updateUser($id, $username, $password, $tip_korisnika) == 0) {
             throw new Exception('Desio se problem tokom azuriranja.');
         }
@@ -58,7 +58,7 @@ class UserManager
     public function find($username = null)
     {
         if ($username) {
-            $userService = UserService::getInstance(DB::getInstance());
+            $userService = UserService::getInstance(DBManager::getInstance());
             $user = $userService->getUserByUsername($username);
             if(!$user) {
                 return false;
