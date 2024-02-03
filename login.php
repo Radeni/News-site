@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
+require_once 'service/UserService.php';
 
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
@@ -10,9 +11,9 @@ if (Input::exists()) {
             'password' => array('required' => true)
         ));
 
-        if ($validation->passed()) {
+        if ($validation->passed()) { 
             // Login user
-            $userService = UserService::getInstance(DB::getInstance());
+            $userService = UserService::getInstance(DB::getInstance()::pdo());
             $user = $userService->loginUser(Input::get('email'), Input::get('password'));
 
             if ($user) {

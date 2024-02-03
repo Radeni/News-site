@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
-$user = new User();
+$user = new UserManager();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +32,6 @@ $user = new User();
   <style>
     .navbar {
       background-color: #ff0000;
-      color: #ff0000;
     }
 
     .navbar-brand {

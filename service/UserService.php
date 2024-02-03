@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'dao/UserDAO.php';
 class UserService {
     private $userDAO;
     private static $instance = null;

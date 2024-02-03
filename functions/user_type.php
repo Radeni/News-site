@@ -1,4 +1,5 @@
 <?php
+#-----------------OBSOLETE FILE----------------------------
 declare(strict_types=1);
 
 function User_type($tip)

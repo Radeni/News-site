@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 class DB
 {
-    private static $_instance = null;
-    private $_pdo,
-            $_query,
+    private static $_pdo,$_instance = null;
+    private $_query,
             $_error = null,
             $_results,
             $_count = 0;
 
-    public function __construct()
+    private function __construct()
     {
         try {
             $this->_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db') . ';port=' . Config::get('mysql/port'), Config::get('mysql/username'), Config::get('mysql/password'));
@@ -18,6 +17,10 @@ class DB
         } catch (PDOException $e) {
             die($e->getMessage());
         }
+    }
+    public static function pdo()
+    {
+        return self::$_pdo;
     }
 
     public static function getInstance()
@@ -107,9 +110,6 @@ class DB
         if ($table == 'korisnik') {
             $sql = "UPDATE `{$table}` SET {$set} WHERE `korisnik_id` = ?";
         }
-        elseif ($table == 'admin') {
-            $sql = "UPDATE `{$table}` SET {$set} WHERE `admin_id` = ?";
-        }
         else {
             return false;
         }
@@ -148,5 +148,10 @@ class DB
     public function count()
     {
         return $this->_count;
+    }
+    // Prevent cloning and unserialization
+    private function __clone() { }
+    public function __wakeup() {
+        throw new Exception("Cannot unserialize a singleton.");
     }
 }
