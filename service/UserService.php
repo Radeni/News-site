@@ -19,6 +19,10 @@ class UserService {
         return $this->userDAO->getUserById($id);
     }
 
+    public function getUserByUsername($username) {
+        return $this->userDAO->getUserByUsername($username);
+    }
+
     public function createUser($username, $password, $tip) {
         $user = new User(null, $username, $password, $tip);
         return $this->userDAO->addUser($user);

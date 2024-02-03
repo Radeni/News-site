@@ -7,8 +7,7 @@ class UserManager
     private $_db,
             $_data,
             $_sessionName,
-            $_isLoggedIn,
-            $_permissionLevel;
+            $_isLoggedIn;
 
     public function __construct($user = null)
     {
@@ -29,92 +28,56 @@ class UserManager
             $this->find($user);
         }
     }
-    public function create($tip_korisnika, $fields = array(), $db = '')
+    public function create($tip_korisnika, $username, $password, $db = '')
     {
         if ($db == ''){
             $db = $this->_db;
         }
-        if (!is_array($fields)) {
+        if (!$username || !$password) {
             throw new Exception('Pogresni podaci');
-        }
-        if (count($fields) < 2) {
-            throw new Exception('Nedovoljno polja');
         }
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        if (!$db->insert('user', array('tip' => $tip_db))) {
-            throw new Exception('Desio se problem tokom kreiranja naloga.');
-        }
-        $id = $db->query('SELECT * FROM user ORDER BY idKorisnik DESC LIMIT 1')->first()->idKorisnik;
-        $fields['idKorisnik'] = $id;
-        if (!$db->insert($tip_korisnika, $fields)) {
-            throw new Exception('Desio se problem tokom kreiranja naloga.');
+        $userService = UserService::getInstance(DB::getInstance());
+        $user = $userService->loginUser($username, $password);
+        if (!$user) {
+            throw new Exception('Desio se problem prilikom kreiranja naloga!');
         }
     }
-    public function update($table, $fields = array(), $id = null)
+    public function update($username, $password, $id, $tip_korisnika)
     {
-        if (!$id && $this->isLoggedIn()) {
-            if ($table == 'korisnik') {
-                $id = $this->data()->korisnik_id;
-            }
-            elseif ($table == 'admin') {
-                $id = $this->data()->admin_id;
-            }
-            else {
-                throw new Exception('Nepoznat tip korisnika');
-            }
+        if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
+            throw new Exception('Nepostojeci tip korisnika');
         }
-        if (!$this->_db->updateUser($table, $id, $fields)) {
+        $userService = UserService::getInstance(DB::getInstance());
+        if ($userService->updateUser($id, $username, $password, $tip_korisnika) == 0) {
             throw new Exception('Desio se problem tokom azuriranja.');
         }
     }
-    public function find($user = null)
+    public function find($username = null)
     {
-        if ($user) {
-            // if user had a numeric username this FAILS...
-            $data = '';
-            if (is_numeric($user)) {
-                $field = 'idKorisnik';
-                $this->_permissionLevel = $this->_db->get('user', array($field, '=', $user))->results()[0]->Tip;
-                if ($this->_permissionLevel == 1) {
-                    $data = $this->_db->get('korisnik', array($field, '=', $user))->results();
-                }
-                if ($this->_permissionLevel == 2) {
-                    $data = $this->_db->get('admin', array($field, '=', $user))->results();
-                }
-                if ($data) {
-                    $this->_data = $data[0];
-                    return true;
-                }
-            } else {
-                $field = 'email';
-                $korisnik = $this->_db->get('korisnik', array($field, '=', $user))->results();
-                $admin = $this->_db->get('admin', array($field, '=', $user))->results();
+        if ($username) {
+            $userService = UserService::getInstance(DB::getInstance());
+            $user = $userService->getUserByUsername($username);
+            if(!$user) {
+                return false;
             }
-            if (!is_numeric($user) && $korisnik) {
-                $this->_data = $korisnik[0];
-                $this->_permissionLevel = 1;
-                return true;
-            }
-            if (!is_numeric($user) && $admin) {
-                $this->_data = $admin[0];
-                $this->_permissionLevel = 2;
-                return true;
-            }//THIS WHOLE THING IS DUMB BUT IT WORKS
+            $this->_data = $user;
+            return true;
         }
         return false;
     }
-    public function login($email = null, $password = null)
+    public function login($username = null, $password = null)
     {
         // check if username has been defined
-        if (!$email && !$password && $this->exists()) {
-            Session::put($this->_sessionName, $this->data()->idKorisnik);
+        if (!$username && !$password && $this->exists()) {
+            Session::put($this->_sessionName, $this->data()->username);
         } else {
-            $user = $this->find($email);
+            $user = $this->find($username);
             if ($user) {
-                if (password_verify($password, $this->data()->password)) {
-                    Session::put($this->_sessionName, $this->data()->idKorisnik);
+                if(password_verify($password, $this->data()->password)) {
+                    Session::put($this->_sessionName, $this->data()->username);
                     $this->_isLoggedIn = true;
                     return true;
                 }
@@ -129,6 +92,7 @@ class UserManager
     public function logout()
     {
         $this->_isLoggedIn = false;
+        $this->_data = null;
         Session::delete($this->_sessionName);
     }
     public function data()
@@ -138,9 +102,5 @@ class UserManager
     public function isLoggedIn()
     {
         return $this->_isLoggedIn;
-    }
-    public function permissionLevel()
-    {
-        return $this->_permissionLevel;
     }
 }

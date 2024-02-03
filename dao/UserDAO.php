@@ -27,6 +27,20 @@ class UserDAO {
         return null;
     }
 
+    public function getUserByUsername($username) {
+        $query = "SELECT * FROM User WHERE Username = :username";
+        $stmt = $this->dbConnection->prepare($query);
+        $stmt->bindParam(':username', $username, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Tip']);
+        }
+
+        return null;
+    }
+
     public function loginUser($username, $password) {
         $query = "SELECT * FROM User WHERE Username = :username";
         $stmt = $this->dbConnection->prepare($query);
