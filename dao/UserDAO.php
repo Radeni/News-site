@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'data/User.php';
 class UserDAO {
     private $dbConnection;
     private static $instance = null;

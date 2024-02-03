@@ -11,12 +11,6 @@ class DB
 
     private function __construct()
     {
-        try {
-            $this->_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db') . ';port=' . Config::get('mysql/port'), Config::get('mysql/username'), Config::get('mysql/password'));
-            $this->_pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        } catch (PDOException $e) {
-            die($e->getMessage());
-        }
     }
     public static function pdo()
     {
@@ -26,6 +20,12 @@ class DB
     public static function getInstance()
     {
         if (!isset(self::$_instance)) {
+            try {
+                self::$_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db') . ';port=' . Config::get('mysql/port'), Config::get('mysql/username'), Config::get('mysql/password'));
+                self::$_pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            } catch (PDOException $e) {
+                die($e->getMessage());
+            }
             self::$_instance = new DB();
         }
         return self::$_instance;
