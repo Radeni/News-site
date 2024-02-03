@@ -2,16 +2,15 @@
 declare(strict_types=1);
 require_once 'core/init.php';
 $db = DBManager::getInstance();
-$user = new User();
-if($user->permissionLevel()!=2)
+$user = new UserManager();
+if($user->data()->getTip() != 'glavni_urednik')
 {
   Redirect::to('index.php');
 }
-$sql = "SELECT * FROM oglasi";
 
 
 // Execute the prepared SQL statement
-$oglasi = $db->query($sql, array())->results();
+$novinari = UserService::getInstance()->getNovinari($user->data()->getTip());
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>

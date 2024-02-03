@@ -175,9 +175,16 @@ require_once 'navbar.php';
                     <label for="telefon" class="form-label">Phone:</label>
                     <input type="text" class="form-control" id="telefon" name="telefon" required>
                 </div>
-                <div class="mb-3"><!-- Change this to select dropdown menu -->
+                <!-- <div class="mb-3"> Change this to select dropdown menu
                     <label for="tip" class="form-label">Tip:</label>
                     <input type="text" class="form-control" id="tip" name="tip" required>
+                </div>-->
+                <div class="mb-3">
+                <label for="tip" class="form-label">Tip:</label>
+                <select class="form-select" id="tip" name="tip" required>
+                    <option value="novinar">Novinar</option>
+                    <option value="urednik">Urednik</option>
+                </select>
                 </div>
             </div>
             <div class="text-center">

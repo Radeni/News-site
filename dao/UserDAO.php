@@ -88,7 +88,26 @@ class UserDAO {
         $stmt->execute();
         return $stmt->rowCount();
     }
+    public function getAllUsersByType($dbConnection, $tip) {
+        $query = "SELECT * FROM User WHERE Tip = :tip";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':tip', $tip, PDO::PARAM_STR);
+        $stmt->execute();
 
+        $users = $stmt->fetchAll(PDO::FETCH_DEFAULT);
+
+        return $users;
+    }
+    public function getAllUsersByRub($dbConnection, $tip) {
+        $query = "SELECT * FROM User WHERE Tip = :tip";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':tip', $tip, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $users = $stmt->fetchAll(PDO::FETCH_DEFAULT);
+
+        return $users;
+    }
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {

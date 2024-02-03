@@ -44,7 +44,15 @@ class UserRubrikaDAO {
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $rows; // Returns an array of associations
     }
+    public function getAllUsersByRub($dbConnection, $idRubrika) {
+        $query = "SELECT * FROM UserRubrika WHERE idRubrika = :idRubrika";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindValue(':idRubrika', $idRubrika, PDO::PARAM_INT);
+        $stmt->execute();
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {
