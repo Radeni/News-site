@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-
+require_once 'service/UserService.php';
 class Validate
 {
     private $_passed = false,
@@ -36,11 +36,12 @@ class Validate
                                 $this->_addError("{$rule_value} mora biti isto {$item}.");
                             }
                             break;
-                        case 'unique':
-                            #$check = $this->_db->get($rule_value, array($item, '=', $value));
-                            #if ($check->count()) {
-                            #    $this->_addError("{$item} vec postoji.");
-                            #}
+                        case 'uniqueUserUsername':
+                            $userService = UserService::getInstance();
+                            $check = $userService->getUserByUsername($value);
+                            if ($check) {
+                                $this->_addError("{$item} vec postoji.");
+                            }
                             break;
                         case 'numeric':
                             if (!is_numeric($value) && $rule_value) {

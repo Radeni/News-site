@@ -21,7 +21,7 @@ class UserDAO {
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Tip']);
+            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Ime'],$row['Prezime'],$row['Telefon'], $row['Tip']);
         }
 
         return null;
@@ -35,7 +35,7 @@ class UserDAO {
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Tip']);
+            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Ime'],$row['Prezime'],$row['Telefon'], $row['Tip']);
         }
 
         return null;
@@ -49,18 +49,21 @@ class UserDAO {
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row && password_verify($password, $row['Password'])) {
-            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Tip']);
+            return new User($row['idKorisnik'], $row['Username'], $row['Password'], $row['Ime'],$row['Prezime'],$row['Telefon'], $row['Tip']);
         }
 
         return null;
     }
 
     public function addUser($dbConnection, User $user) {
-        $query = "INSERT INTO User (Username, Password, Tip) VALUES (:username, :password, :tip)";
+        $query = "INSERT INTO User (Username, Password, Ime, Prezime, Telefon, Tip) VALUES (:username, :password, :ime, :prezime, :telefon, :tip)";
         $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':username', $user->getUsername(), PDO::PARAM_STR);
         $stmt->bindValue(':password', password_hash($user->getPassword(), PASSWORD_BCRYPT), PDO::PARAM_STR);
+        $stmt->bindValue(':ime', $user->getIme(), PDO::PARAM_STR);
+        $stmt->bindValue(':prezime', $user->getPrezime(), PDO::PARAM_STR);
+        $stmt->bindValue(':telefon', $user->getTelefon(), PDO::PARAM_STR);
         $stmt->bindValue(':tip', $user->getTip(), PDO::PARAM_STR);
 
         $stmt->execute();

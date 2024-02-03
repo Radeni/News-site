@@ -23,7 +23,7 @@ class UserService {
         return UserDAO::getInstance()->getUserByUsername($connection, $username);
     }
 
-    public function createUser(User $user) {
+    public function registerUser(User $user) {
         $connection = DBManager::getInstance()->getConnection();
         return UserDAO::getInstance()->addUser($connection, $user);
     }

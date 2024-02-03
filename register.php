@@ -2,6 +2,11 @@
 declare(strict_types=1);
 require_once 'core/init.php';
 
+$userManager = new UserManager();
+if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik')
+{
+  Redirect::to('index.php');
+}
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
         $validate = new Validate();
@@ -10,54 +15,49 @@ if (Input::exists()) {
             'firstname' => array(
                 'required' => true,
                 'min' => 2,
-                'max' => 40,
+                'max' => 45,
             ),
             'lastname' => array(
                 'required' => true,
                 'min' => 2,
-                'max' => 40,
+                'max' => 45,
             ),
-            'email' => array(
+            'username' => array(
                 'required' => true,
                 'min' => 5,
                 'max' => 80,
-                'unique' => 'korisnik'
+                'uniqueUserUsername' => 'HMMMMMMMMMM'
             ),
             'password' => array(
                 'required' => true,
-                'min' => 6
+                'min' => 3
             ),
             'password_confirm' => array(
                 'required' => true,
                 'matches' => 'password'
             ),
-            'grad' => array(
+            'telefon' => array(
                 'required' => true,
-                'min' => 2,
-                'max' => 40,
+                'min' => 5,
+                'max' => 12,
             ),
-            'mobilni' => array(
-                'required' => true,
-                'min' => 2,
-                'max' => 40,
+            'tip' => array(
+                'required' => true
             ),
             )
         );
         
         if ($validation->passed()) {
-            $user = new User();
 
             try {
-                $user->create('korisnik', array(
-                    'email' => Input::get('email'),
-                    'password' => password_hash(Input::get('password'), PASSWORD_BCRYPT),
-                    'ime' => Input::get('firstname'),
-                    'prezime' => Input::get('lastname'),
-                    'mobilni' => Input::get('mobilni'),
-                    'grad' => Input::get('grad')
-                ));
-                Session::flash('home', 'You have been registered and can now log in!');
-                Redirect::to('index.php');
+                $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
+                $userManager->register(Input::get('tip'), $user);
+                if($userManager) {
+                    Redirect::to('index.php');
+                }
+                else {
+                    die();
+                }
             } catch(Exception $e) {
                 die($e->getMessage());
             }
@@ -160,8 +160,8 @@ require_once 'navbar.php';
                     <input type="text" class="form-control" id="lastname" name="lastname" required>
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password:</label>
@@ -172,12 +172,12 @@ require_once 'navbar.php';
                     <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
                 </div>
                 <div class="mb-3">
-                    <label for="grad" class="form-label">City:</label>
-                    <input type="text" class="form-control" id="grad" name="grad" required>
+                    <label for="telefon" class="form-label">Phone:</label>
+                    <input type="text" class="form-control" id="telefon" name="telefon" required>
                 </div>
-                <div class="mb-3">
-                    <label for="mobilni" class="form-label">Phone:</label>
-                    <input type="text" class="form-control" id="mobilni" name="mobilni" required>
+                <div class="mb-3"><!-- Change this to select dropdown menu -->
+                    <label for="tip" class="form-label">Tip:</label>
+                    <input type="text" class="form-control" id="tip" name="tip" required>
                 </div>
             </div>
             <div class="text-center">

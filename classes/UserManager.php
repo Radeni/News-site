@@ -29,19 +29,19 @@ class UserManager
             $this->find($user);
         }
     }
-    public function create($tip_korisnika, $username, $password, $db = '')
+    public function register($tip_korisnika, User $user, $db = '')
     {
         if ($db == ''){
             $db = $this->_db;
         }
-        if (!$username || !$password) {
+        if (!$user) {
             throw new Exception('Pogresni podaci');
         }
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
         $userService = UserService::getInstance();
-        $user = $userService->loginUser($username, $password);
+        $user = $userService->registerUser($user);
         if (!$user) {
             throw new Exception('Desio se problem prilikom kreiranja naloga!');
         }

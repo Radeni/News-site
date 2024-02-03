@@ -6,7 +6,6 @@ $user = new User();
 if($user->permissionLevel()!=2)
 {
   Redirect::to('index.php');
-
 }
 $sql = "SELECT * FROM oglasi";
 
