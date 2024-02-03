@@ -74,7 +74,7 @@ $user = new UserManager();
         }
         else {
             
-            if($user->permissionLevel()==2)
+            if($user->data()->getTip() == 'glavni_urednik')
             {
               echo '<a class="nav-link" href="admin_cars.php">Novinari</a>';
               echo '<a class="nav-link" href="register.php">Registruj novinara</a>';

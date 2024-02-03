@@ -13,8 +13,8 @@ if (Input::exists()) {
 
         if ($validation->passed()) { 
             // Login user
-            $userService = UserService::getInstance();
-            $user = $userService->loginUser(Input::get('email'), Input::get('password'));
+            $userManager = new UserManager();
+            $user = $userManager->login(Input::get('email'), Input::get('password'));
 
             if ($user) {
                 Redirect::to('index.php');

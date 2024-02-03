@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once 'functions/user_type.php';
+require_once 'service/UserService.php';
 class UserManager
 {
     private $_db,
@@ -39,7 +40,7 @@ class UserManager
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        $userService = UserService::getInstance(DBManager::getInstance());
+        $userService = UserService::getInstance();
         $user = $userService->loginUser($username, $password);
         if (!$user) {
             throw new Exception('Desio se problem prilikom kreiranja naloga!');
@@ -50,15 +51,15 @@ class UserManager
         if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        $userService = UserService::getInstance(DBManager::getInstance());
+        $userService = UserService::getInstance();
         if ($userService->updateUser($id, $username, $password, $tip_korisnika) == 0) {
-            throw new Exception('Desio se problem tokom azuriranja.');
+            throw new Exception('Doslo je do problema tokom azuriranja.');
         }
     }
     public function find($username = null)
     {
         if ($username) {
-            $userService = UserService::getInstance(DBManager::getInstance());
+            $userService = UserService::getInstance();
             $user = $userService->getUserByUsername($username);
             if(!$user) {
                 return false;
@@ -76,8 +77,8 @@ class UserManager
         } else {
             $user = $this->find($username);
             if ($user) {
-                if(password_verify($password, $this->data()->password)) {
-                    Session::put($this->_sessionName, $this->data()->username);
+                if(password_verify($password, $this->data()->getPassword())) {
+                    Session::put($this->_sessionName, $this->data()->getUsername());
                     $this->_isLoggedIn = true;
                     return true;
                 }
