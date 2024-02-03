@@ -4,13 +4,19 @@ class User {
     private $idKorisnik;
     private $username;
     private $password;
+    private $ime;
+    private $prezime;
+    private $telefon;
     private $tip;
 
     // Constructor
-    public function __construct($idKorisnik, $username, $password, $tip) {
+    public function __construct($idKorisnik, $username, $password, $ime, $prezime, $telefon, $tip) {
         $this->idKorisnik = $idKorisnik;
         $this->username = $username;
         $this->password = $password;
+        $this->ime = $ime;
+        $this->prezime = $prezime;
+        $this->telefon = $telefon;
         $this->tip = $tip;
     }
 
@@ -25,6 +31,18 @@ class User {
 
     public function getPassword() {
         return $this->password;
+    }
+    
+    public function getIme() {
+        return $this->ime;
+    }
+
+    public function getPrezime() {
+        return $this->prezime;
+    }
+
+    public function getTelefon() {
+        return $this->telefon;
     }
 
     public function getTip() {
@@ -41,6 +59,18 @@ class User {
 
     public function setPassword($password) {
         $this->password = $password;
+    }
+
+    public function setIme($ime) {
+        $this->ime = $ime;
+    }
+
+    public function setPrezime($prezime) {
+        $this->prezime = $prezime;
+    }
+
+    public function setTelefon($telefon) {
+        $this->telefon = $telefon;
     }
 
     public function setTip($tip) {

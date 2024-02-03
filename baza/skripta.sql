@@ -77,9 +77,13 @@ CREATE TABLE IF NOT EXISTS `news`.`User` (
   `idKorisnik` INT NOT NULL AUTO_INCREMENT,
   `Username` VARCHAR(80) NOT NULL,
   `Password` VARCHAR(100) NOT NULL,
+  `Ime` VARCHAR(45) NOT NULL,
+  `Prezime` VARCHAR(45) NOT NULL,
+  `Telefon` VARCHAR(45) NOT NULL,
   `Tip` ENUM("novinar", "urednik", "glavni_urednik") NOT NULL,
   PRIMARY KEY (`idKorisnik`),
-  UNIQUE INDEX `idKorisnik_UNIQUE` (`idKorisnik` ASC) VISIBLE)
+  UNIQUE INDEX `idKorisnik_UNIQUE` (`idKorisnik` ASC) VISIBLE,
+  UNIQUE INDEX `Username_UNIQUE` (`Username` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -114,7 +118,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `news`;
-INSERT INTO `news`.`User` (`idKorisnik`, `Username`, `Password`, `Tip`) VALUES (1, 'admin', '$2a$12$imNXkN62wcomZpbkRV66jug.XHWvwVqQnTvOdawdNdvtQIrlyoP8O', 'glavni_urednik');
+INSERT INTO `news`.`User` (`idKorisnik`, `Username`, `Password`, `Ime`, `Prezime`, `Telefon`, `Tip`) VALUES (1, 'admin', '$2a$12$imNXkN62wcomZpbkRV66jug.XHWvwVqQnTvOdawdNdvtQIrlyoP8O', 'Mihajlo', 'Radosevic', '064/123-45-67', 'glavni_urednik');
 
 COMMIT;
 
