@@ -10,23 +10,24 @@ if($user->data()->getTip() != 'glavni_urednik')
 
 
 // Execute the prepared SQL statement
-$novinari = UserService::getInstance()->getNovinari($user->data()->getTip());
+$novinari = UserService::getInstance()->getAllUsers();
+var_dump($novinari);
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cars</title>
+    <title>Novinari</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
     <style>
-        .car-card {
+        .user-card {
             max-width: 18rem;
             margin-bottom: 1rem;
             box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
         }
-        .car-card .card-img-top {
+        .user-card .card-img-top {
             height: 200px; /* Set a fixed height for the car image */
             object-fit: cover; /* Ensure the image covers the entire container */
         }
@@ -81,33 +82,29 @@ require_once 'navbar.php';
 <body>
 
 <?php
-if (count($oglasi) > 0) {
-    foreach ($oglasi as $oglas) {
-        $korisnik = $db->get('korisnik', array('korisnik_id', '=', $oglas->korisnik_id))->first();
-        $slika_id = $db->get('oglas_ima_sliku', array('oglas_id', '=', $oglas->oglas_id))->first()->slika_id;
-        $slika_hash = $db->get('slika', array('slika_id', '=', $slika_id))->first()->hash;
-        $link = "car-details.php?id=" . strval($oglas->oglas_id);
-        echo '<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card car-card  mx-auto">';
-echo '<img src="slike_oglasa/' . $slika_hash . '" alt="Car Picture" class="card-img-top">';
-echo '<div class="card-body">';
-echo '<h5 class="card-title"><b>Model:</b> ' . $oglas->marka . " " .  $oglas->model . '</h5>';
-echo '<p class="card-text"><b>Year:</b> ' . $oglas->godiste . '.</p>';
-echo '<p class="card-text"><b>Price:</b> ' . $oglas->cena . '</p>';
-echo '<div class="text-center">
-    <a href="' . $link . '" class="btn btn-dark">View Details</a>
-</div>
-<div class="text-center">
-    <a href="obrisi_oglas.php?id=' . $oglas->oglas_id . '" class="btn btn-danger">Delete</a>
-</div>';
-if ($oglas->admin_id == NULL){
+if (count($novinari) > 0) {
+    foreach ($novinari as $novinar) {
+                
+                echo '<div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="card user-card  mx-auto">';
+        echo '<div class="card-body">';
+        echo '<h5 class="card-title"><b>Ime i prezime:</b> ' . $novinar->getIme() . " " .  $novinar->getPrezime() . '</h5>';
+        echo '<p class="card-text"><b>Telefon:</b> ' . $novinar->getTelefon() . '.</p>';
+        //echo '<p class="card-text"><b>Rubrike:</b> ' . $novinar->cena . '</p>';
+        echo '<div class="text-center">
+            <a href="' . $link . '" class="btn btn-dark">View Details</a>
+        </div>
+        <div class="text-center">
+            <a href="obrisi_oglas.php?id=' . $novinar->oglas_id . '" class="btn btn-danger">Delete</a>
+        </div>';
+if ($novinar->admin_id == NULL){
 
-echo '
-<div class="text-center">
-    <a href="odobri_oglas.php?id=' . $oglas->oglas_id . '" class="btn btn-dark">Approve</a>
-</div>';
+    echo '
+    <div class="text-center">
+        <a href="odobri_oglas.php?id=' . $novinar->oglas_id . '" class="btn btn-dark">Approve</a>
+    </div>';
 }
 echo '
 </div>
