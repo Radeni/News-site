@@ -86,7 +86,6 @@ if (count($novinari) > 0) {
     foreach ($novinari as $novinar) {
         $tip = $novinar->getTip();
         if ($tip != 'glavni_urednik'){
-            $link = '';
             echo '<div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-4">
@@ -105,7 +104,7 @@ if (count($novinari) > 0) {
             else {$tip = 'Nepoznato';}
         echo '<p class="card-text"><b>Vrsta novinara:</b> ' . $tip . '</p>';
         echo '<div class="text-center">
-            <a href="' . $link . '" class="btn btn-dark">View Details</a>
+        <a href="manage_user.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-dark">Upravljaj Korisnikom</a>
         </div>
         <div class="text-center">
             <a href="obrisi_korisnika.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
