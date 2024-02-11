@@ -34,7 +34,16 @@ class UserRubrikaDAO {
         $stmt->execute();
         return $stmt->rowCount();
     }
-    
+    public function purgeUser($dbConnection, $idKorisnik) {
+        $query = "DELETE FROM UserRubrika WHERE idKorisnik = :idKorisnik";
+        $stmt = $dbConnection->prepare($query);
+
+        $stmt->bindValue(':idKorisnik', $idKorisnik, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
     public function getUserRubrikas($dbConnection, $idKorisnik) {
         $query = "SELECT * FROM UserRubrika WHERE idKorisnik = :idKorisnik";
         $stmt = $dbConnection->prepare($query);

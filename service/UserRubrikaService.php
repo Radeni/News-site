@@ -23,13 +23,17 @@ class UserRubrikaService {
         $connection = DBManager::getInstance()->getConnection();
         return UserRubrikaDAO::getInstance()->deleteUserFromRubrika($connection, $idKorisnik, $idRubrika);
     }
+    public function purgeUser($idKorisnik) {
+        $connection = DBManager::getInstance()->getConnection();
+        return UserRubrikaDAO::getInstance()->purgeUser($connection, $idKorisnik);
+    }
 
     public function getUserRubrikas($idKorisnik) {
         $connection = DBManager::getInstance()->getConnection();
         $rubrikas =  UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
         $rubrike = array();
         foreach ($rubrikas as $rubrika_id) {
-            $rubrika = RubrikaDAO::getInstance()->getUserRubrika($connection, $rubrika_id);
+            $rubrika = RubrikaDAO::getInstance()->getRubrikaById($connection, $rubrika_id);
             array_push($rubrike, $rubrika);
         }
         return $rubrike;

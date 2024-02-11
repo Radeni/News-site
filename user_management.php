@@ -11,7 +11,7 @@ if($user->data()->getTip() != 'glavni_urednik')
 
 // Execute the prepared SQL statement
 $novinari = UserService::getInstance()->getAllUsers();
-var_dump($novinari);
+//var_dump($novinari);
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -84,28 +84,39 @@ require_once 'navbar.php';
 <?php
 if (count($novinari) > 0) {
     foreach ($novinari as $novinar) {
-                $link = '';
-                echo '<div class="container">
+        $tip = $novinar->getTip();
+        if ($tip != 'glavni_urednik'){
+            $link = '';
+            echo '<div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-4">
                     <div class="card user-card  mx-auto">';
-        echo '<div class="card-body">';
-        echo '<h5 class="card-title"><b>Ime i prezime:</b> ' . $novinar->getIme() . " " .  $novinar->getPrezime() . '</h5>';
-        echo '<p class="card-text"><b>Telefon:</b> ' . $novinar->getTelefon() . '.</p>';
-        //echo '<p class="card-text"><b>Rubrike:</b> ' . $novinar->cena . '</p>';
+            echo '<div class="card-body">';
+            echo '<h5 class="card-title"><b>Ime i prezime:</b> ' . $novinar->getIme() . " " .  $novinar->getPrezime() . '</h5>';
+            echo '<p class="card-text"><b>Telefon:</b> ' . $novinar->getTelefon() . '.</p>';
+            
+            if($tip == 'novinar')
+            {
+                $tip = 'Novinar';
+            } elseif($tip == 'urednik')
+            {
+                $tip = 'Urednik';
+            }
+            else {$tip = 'Nepoznato';}
+        echo '<p class="card-text"><b>Vrsta novinara:</b> ' . $tip . '</p>';
         echo '<div class="text-center">
             <a href="' . $link . '" class="btn btn-dark">View Details</a>
         </div>
         <div class="text-center">
-            <a href="obrisi_oglas.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
+            <a href="obrisi_korisnika.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
         </div>';
-if ($novinar->getIdKorisnik() == NULL){
+/*if ($novinar->getIdKorisnik() == NULL){
 
     echo '
     <div class="text-center">
         <a href="odobri_oglas.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-dark">Approve</a>
     </div>';
-}
+}*/
 echo '
 </div>
 </div>
@@ -113,9 +124,9 @@ echo '
 </div>
 </div>';
 
+        }
     }
-}
-                
+}          
                     
                    
                     
