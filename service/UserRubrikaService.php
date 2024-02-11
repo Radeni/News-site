@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'dao/UserRubrikaDAO.php';
+require_once 'dao/RubrikaDAO.php';
 class UserRubrikaService {
     private static $instance = null;
     private function __construct() {
@@ -25,7 +26,13 @@ class UserRubrikaService {
 
     public function getUserRubrikas($idKorisnik) {
         $connection = DBManager::getInstance()->getConnection();
-        return UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
+        $rubrikas =  UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
+        $rubrike = array();
+        foreach ($rubrikas as $rubrika_id) {
+            $rubrika = RubrikaDAO::getInstance()->getUserRubrika($connection, $rubrika_id);
+            array_push($rubrike, $rubrika);
+        }
+        return $rubrike;
     }
 
     // Prevent cloning and unserialization

@@ -41,7 +41,7 @@ class UserRubrikaDAO {
         $stmt->bindValue(':idKorisnik', $idKorisnik, PDO::PARAM_INT);
         $stmt->execute();
 
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $userRubrikas = [];
 
         foreach ($rows as $row) {
