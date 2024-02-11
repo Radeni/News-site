@@ -93,18 +93,44 @@ class UserDAO {
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':tip', $tip, PDO::PARAM_STR);
         $stmt->execute();
-
-        $users = $stmt->fetchAll(PDO::FETCH_DEFAULT);
-
+    
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = [];
+    
+        foreach ($rows as $row) {
+            $users[] = new User(
+                $row['idKorisnik'],
+                $row['Username'],
+                $row['Password'],
+                $row['Ime'],
+                $row['Prezime'],
+                $row['Telefon'],
+                $row['Tip']
+            );
+        }
+    
         return $users;
     }
     public function getAllUsers($dbConnection) {
         $query = "SELECT * FROM User";
         $stmt = $dbConnection->prepare($query);
         $stmt->execute();
-
-        $users = $stmt->fetchAll(PDO::FETCH_DEFAULT);
-
+    
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = [];
+    
+        foreach ($rows as $row) {
+            $users[] = new User(
+                $row['idKorisnik'],
+                $row['Username'],
+                $row['Password'],
+                $row['Ime'],
+                $row['Prezime'],
+                $row['Telefon'],
+                $row['Tip']
+            );
+        }
+    
         return $users;
     }
     

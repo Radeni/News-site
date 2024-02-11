@@ -17,7 +17,6 @@ class VestDAO {
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             return new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika']);

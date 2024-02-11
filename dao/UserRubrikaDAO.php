@@ -34,16 +34,26 @@ class UserRubrikaDAO {
         $stmt->execute();
         return $stmt->rowCount();
     }
-
+    
     public function getUserRubrikas($dbConnection, $idKorisnik) {
         $query = "SELECT * FROM UserRubrika WHERE idKorisnik = :idKorisnik";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindValue(':idKorisnik', $idKorisnik, PDO::PARAM_INT);
         $stmt->execute();
 
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $rows; // Returns an array of associations
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
+        $userRubrikas = [];
+
+        foreach ($rows as $row) {
+            $userRubrikas[] = new UserRubrika(
+                $row['idKorisnik'],
+                $row['idRubrika']
+            );
+        }
+
+        return $userRubrikas;
     }
+
     public function getAllUsersByRub($dbConnection, $idRubrika) {
         $query = "SELECT * FROM UserRubrika WHERE idRubrika = :idRubrika";
         $stmt = $dbConnection->prepare($query);
@@ -51,8 +61,18 @@ class UserRubrikaDAO {
         $stmt->execute();
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $rows;
+        $userRubrikasByRub = [];
+
+        foreach ($rows as $row) {
+            $userRubrikasByRub[] = new UserRubrika(
+                $row['idKorisnik'],
+                $row['idRubrika']
+            );
+        }
+
+        return $userRubrikasByRub;
     }
+
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {

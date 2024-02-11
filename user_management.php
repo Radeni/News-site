@@ -84,7 +84,7 @@ require_once 'navbar.php';
 <?php
 if (count($novinari) > 0) {
     foreach ($novinari as $novinar) {
-                
+                $link = '';
                 echo '<div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-4">
@@ -97,13 +97,13 @@ if (count($novinari) > 0) {
             <a href="' . $link . '" class="btn btn-dark">View Details</a>
         </div>
         <div class="text-center">
-            <a href="obrisi_oglas.php?id=' . $novinar->oglas_id . '" class="btn btn-danger">Delete</a>
+            <a href="obrisi_oglas.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
         </div>';
-if ($novinar->admin_id == NULL){
+if ($novinar->getIdKorisnik() == NULL){
 
     echo '
     <div class="text-center">
-        <a href="odobri_oglas.php?id=' . $novinar->oglas_id . '" class="btn btn-dark">Approve</a>
+        <a href="odobri_oglas.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-dark">Approve</a>
     </div>';
 }
 echo '
