@@ -47,13 +47,13 @@ class UserManager
         }
         return $user_id;
     }
-    public function update_user_data($id, $username, $tip_korisnika)
+    public function update(User $user)
     {
-        if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
+        if (!in_array($user->getTip(), array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
         $userService = UserService::getInstance();
-        if ($userService->updateUser($id, $username, $tip_korisnika) == 0) {
+        if ($userService->updateUser($user) == 0) {
             throw new Exception('Doslo je do problema tokom azuriranja.');
         }
     }

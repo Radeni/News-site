@@ -58,9 +58,9 @@ class UserService {
         return UserDAO::getInstance()->addUser($connection, $user);
     }
 
-    public function updateUser($id, $username, $tip_korisnika) {
+    public function updateUser(User $user) {
         $connection = DBManager::getInstance()->getConnection();
-        return UserDAO::getInstance()->updateUser($connection, $id, $username, $tip_korisnika);
+        return UserDAO::getInstance()->updateUser($connection, $user);
     }
 
     public function deleteUser($id) {

@@ -70,13 +70,16 @@ class UserDAO {
         return $dbConnection->lastInsertId();
     }
 
-    public function updateUser($dbConnection, $id, $username, $tip_korisnika) {
-        $query = "UPDATE User SET Username = :username, Tip = :tip WHERE idKorisnik = :id";
+    public function updateUser($dbConnection, User $user) {
+        $query = "UPDATE User SET Username = :username, Ime = :ime, Prezime = :prezime, Telefon = :telefon, Tip = :tip WHERE idKorisnik = :id";
         $stmt = $dbConnection->prepare($query);
 
-        $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-        $stmt->bindValue(':tip', $id, PDO::PARAM_STR);
-        $stmt->bindValue(':id', $tip_korisnika, PDO::PARAM_INT);
+        $stmt->bindValue(':username', $user->getUsername(), PDO::PARAM_STR);
+        $stmt->bindValue(':ime', $user->getIme(), PDO::PARAM_STR);
+        $stmt->bindValue(':prezime', $user->getPrezime(), PDO::PARAM_STR);
+        $stmt->bindValue(':telefon', $user->getTelefon(), PDO::PARAM_STR);
+        $stmt->bindValue(':tip', $user->getTip(), PDO::PARAM_STR);
+        $stmt->bindValue(':id', $user->getIdKorisnik(), PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->rowCount();
