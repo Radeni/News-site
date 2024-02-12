@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'data/Vest.php';
 class VestDAO {
     private static $instance = null;
     private function __construct() {

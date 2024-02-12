@@ -5,12 +5,13 @@ require_once 'service/UserRubrikaService.php';
 require_once 'core/init.php';
 
 $userManager = new UserManager();
-if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik')
-{
-  Redirect::to('index.php');
+if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik') {
+    Redirect::to('index.php');
 }
-if (Input::exists()){var_dump($_POST);};
 $korisnik_id = Input::get('id');
+if($korisnik_id == null) {
+    Redirect::to('index.php');
+}
 $korisnik = UserService::getInstance()->getUserById($korisnik_id);
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
@@ -39,7 +40,6 @@ if (Input::exists()) {
         );
         
         if ($validation->passed()) {
-
             try {
                 $user = new User($korisnik_id, Input::get('username'),null, Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
                 $userManager->update($user);

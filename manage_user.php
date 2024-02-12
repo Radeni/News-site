@@ -1,19 +1,17 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
-require_once 'service/userservice.php';
-/*if (!Input::exists('get')) {
-    Redirect::to('index.php');
-}*/
-$user = new UserManager();
+require_once 'service/UserService.php';
+$userManager = new UserManager();
+//if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik') {
+//  Redirect::to('index.php');
+//}
 $korisnik_id = Input::get('id');
+if($korisnik_id == null) {
+  Redirect::to('index.php');
+}
 $korisnik = UserService::getInstance()->getUserById($korisnik_id);
-$db = DBManager::getInstance();
-//$oglas = $db->query('SELECT * FROM oglasi WHERE oglas_id = ?', array($oglas_id))->first();
-
-
 require_once 'navbar.php';
-
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -98,8 +96,8 @@ require_once 'navbar.php';
           <p class="card-text">User Name: <?php echo escape($korisnik->getUsername())?></p>
           <p class="card-text">Ime: <?php echo escape($korisnik->getIme()) ?></p>
           <p class="card-text">Prezime: <?php echo escape($korisnik->getPrezime()) ?></p>
-          <p class="card-text">Telefon: <?php echo $korisnik->getTelefon() ?></p>
-          <p class="card-text">Tip: <?php echo $korisnik->getTip() ?></p>
+          <p class="card-text">Telefon: <?php echo escape($korisnik->getTelefon()) ?></p>
+          <p class="card-text">Tip: <?php echo escape($korisnik->getTip()) ?></p>
           <div class="text-center">
             <a href="edit_user_data.php?id=<?php echo $korisnik_id?>" class="btn btn-dark">Izmeni Podatke</a>
           </div>

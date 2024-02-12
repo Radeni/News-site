@@ -4,12 +4,7 @@ require_once 'service/UserService.php';
 class Validate
 {
     private $_passed = false,
-            $_errors = array(),
-            $_db = null;
-    public function __construct()
-    {
-        $this->_db = DBManager::getInstance();
-    }
+            $_errors = array();
     public function check($source, $items = array())
     {
         foreach ($items as $item => $rules) {

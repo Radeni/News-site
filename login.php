@@ -11,7 +11,7 @@ if (Input::exists()) {
             'password' => array('required' => true)
         ));
 
-        if ($validation->passed()) { 
+        if ($validation->passed()) {
             // Login user
             $userManager = new UserManager();
             $user = $userManager->login(Input::get('email'), Input::get('password'));

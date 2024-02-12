@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'dao/UserDAO.php';
+require_once 'dao/UserRubrikaDAO.php';
 class UserService {
     private static $instance = null;
     private function __construct() {
@@ -22,18 +23,19 @@ class UserService {
         return UserDAO::getInstance()->getAllUsers($connection);
     }
     public function getAllUsersBy($tip,$rub) {
+        $return_value = null;
         $connection = DBManager::getInstance()->getConnection();
         if ($tip == '' && $rub == '') {
-            return UserDAO::getInstance()->getAllUsers($connection);
+            $return_value =  UserDAO::getInstance()->getAllUsers($connection);
         } else if ($tip != '' && $rub == '') {
-            return UserDAO::getInstance()->getAllUsersByType($connection, $tip);
+            $return_value = UserDAO::getInstance()->getAllUsersByType($connection, $tip);
         } else if ($tip == '' && $rub != '') {
             $userids = UserRubrikaDAO::getInstance()->getAllUsersByRub($connection, $rub);
             $users = array();
             foreach ($userids as $id) {
                 array_push($users, UserDAO::getInstance()->getUserById($connection, $id));
             }
-            return $users;
+            $return_value = $users;
         } else {
             $userids = UserRubrikaDAO::getInstance()->getAllUsersByRub($connection, $rub);
             $users = array();
@@ -45,8 +47,9 @@ class UserService {
                     array_push($users, $user);
                 }
             }
-            return $users;
+            $return_value = $users;
         }
+        return $return_value;
     }
     public function getUserByUsername($username) {
         $connection = DBManager::getInstance()->getConnection();
@@ -54,8 +57,18 @@ class UserService {
     }
 
     public function registerUser(User $user) {
+        if (!$user) {
+            throw new Exception('Pogresni podaci');
+        }
+        if (!in_array($user->getTip(), array('urednik', 'novinar'))) {
+            throw new Exception('Nepostojeci tip korisnika');
+        }
         $connection = DBManager::getInstance()->getConnection();
-        return UserDAO::getInstance()->addUser($connection, $user);
+        $user_id = UserDAO::getInstance()->addUser($connection, $user);
+        if (!$user_id) {
+            throw new Exception('Desio se problem prilikom kreiranja naloga!');
+        }
+        return $user_id;
     }
 
     public function updateUser(User $user) {

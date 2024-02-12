@@ -54,7 +54,7 @@ if (Input::exists()) {
 
             try {
                 $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
-                $user_id = $userManager->register(Input::get('tip'), $user);
+                $user_id = UserService::getInstance()->registerUser($user);
                 foreach (Input::get('rubrike') as $rubrika) {
                     UserRubrikaService::getInstance()->addUserToRubrika($user_id,$rubrika);
                 }

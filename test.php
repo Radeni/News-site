@@ -68,19 +68,19 @@ if($_POST) {
     <form id="editDataForm" action="" method="post">
         <textarea name="content" id="editor">Ovde unesite vaš tekst...</textarea>
         <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                        mediaEmbed: {
-                    previewsInData: true
-                }
-            })
-            .then(editor => {
-                window.editor = editor;
-            })
-            .catch(error => {
-                console.error('There was a problem initializing the editor.', error);
-            });
-        </script>
+            ClassicEditor
+                .create(document.querySelector('#editor'), {
+                            mediaEmbed: {
+                        previewsInData: true
+                    }
+                })
+                .then(editor => {
+                    window.editor = editor;
+                })
+                .catch(error => {
+                    console.error('There was a problem initializing the editor.', error);
+                });
+            </script>
         <button type="submit" class="btn btn-dark" >Edit</button>
     </form>
 </body>

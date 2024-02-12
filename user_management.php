@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
-$db = DBManager::getInstance();
 $user = new UserManager();
 if($user->data()->getTip() != 'glavni_urednik')
 {
@@ -125,7 +124,7 @@ echo '
 
         }
     }
-}          
+}
                     
                    
                     

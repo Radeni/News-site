@@ -5,15 +5,12 @@ require_once 'functions/user_type.php';
 require_once 'service/UserService.php';
 class UserManager
 {
-    private $_db,
-            $_data,
+    private $_data,
             $_sessionName,
             $_isLoggedIn;
 
     public function __construct($user = null)
     {
-        $this->_db = DBManager::getInstance();
-
         $this->_sessionName = Config::get('session/session_name');
 
         if (!$user) {
@@ -29,31 +26,12 @@ class UserManager
             $this->find($user);
         }
     }
-    public function register($tip_korisnika, User $user, $db = '')
-    {
-        if ($db == ''){
-            $db = $this->_db;
-        }
-        if (!$user) {
-            throw new Exception('Pogresni podaci');
-        }
-        if (!in_array($tip_korisnika, array('urednik', 'novinar'))) {
-            throw new Exception('Nepostojeci tip korisnika');
-        }
-        $userService = UserService::getInstance();
-        $user_id = $userService->registerUser($user);
-        if (!$user) {
-            throw new Exception('Desio se problem prilikom kreiranja naloga!');
-        }
-        return $user_id;
-    }
     public function update(User $user)
     {
         if (!in_array($user->getTip(), array('urednik', 'novinar'))) {
             throw new Exception('Nepostojeci tip korisnika');
         }
-        $userService = UserService::getInstance();
-        $userService->updateUser($user);
+        UserService::getInstance()->updateUser($user);
     }
     public function find($username = null)
     {
@@ -76,7 +54,7 @@ class UserManager
         } else {
             $user = $this->find($username);
             if ($user) {
-                if(password_verify($password, $this->data()->getPassword())) {
+                if (password_verify($password, $this->data()->getPassword())) {
                     Session::put($this->_sessionName, $this->data()->getUsername());
                     $this->_isLoggedIn = true;
                     return true;
