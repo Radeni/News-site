@@ -1,45 +1,25 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
-if (!Input::exists('get')) {
+require_once 'service/userservice.php';
+/*if (!Input::exists('get')) {
     Redirect::to('index.php');
-}
-$user = new User();
-$oglas_id = Input::get('id');
+}*/
+$user = new UserManager();
+$korisnik_id = Input::get('id');
+$korisnik = UserService::getInstance()->getUserById($korisnik_id);
 $db = DBManager::getInstance();
-$oglas = $db->query('SELECT * FROM oglasi WHERE oglas_id = ?', array($oglas_id))->first();
+//$oglas = $db->query('SELECT * FROM oglasi WHERE oglas_id = ?', array($oglas_id))->first();
 
-if (!$oglas->admin_id)
-{
-    if (!$user->isLoggedIn())
-    {
-        Redirect::to(404);
-    }
-    else
-    {
-        if ($user->permissionLevel() == 1)
-        {
-            if ($oglas->korisnik_id != $user->data()->korisnik_id)
-            {
-                Redirect::to(404);
-            }
-        }
-        elseif ($user->permissionLevel() != 2)
-        {
-            Redirect::to(404);
-        }
-    }
-}
 
-$slike = $db->query('SELECT hash FROM slika s JOIN oglas_ima_sliku os ON os.slika_id=s.slika_id JOIN oglasi o ON o.oglas_id = os.oglas_id WHERE o.oglas_id = ?', array($oglas_id))->results();
-$prodavac = $db->get('korisnik', array('korisnik_id', '=', $oglas->korisnik_id))->first();
 require_once 'navbar.php';
+
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Car Details</title>
+  <title>Upravljaj korisnikom</title>
   <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
   <!-- Include jQuery library -->
@@ -104,90 +84,31 @@ require_once 'navbar.php';
     .card-text span {
       font-weight: bold;
     }
-    .swiper-container {
-            width: 100%;
-            height: 100vh; /* Adjust the height as needed */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .swiper-slide img {
-            max-width: 100%;
-            max-height: 50%;
-            object-fit: contain;
-        }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="row mt-4">
-  <div class="swiper-container">
-            <div class="swiper-wrapper">
-                <?php
-                if (!empty($slike)) {
-                    foreach ($slike as $slika) {
-                        echo '<div class="swiper-slide"><img src="./slike_oglasa/'. $slika->hash .'"></div>';
-                    }
-                }
-                ?>
-            </div>
-            <div class="swiper-pagination"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Car Details</h5>
-          <hr>
-          <p class="card-text">Manufacturer: <?php echo escape($oglas->marka) ?></p>
-          <p class="card-text">Model: <?php echo escape($oglas->model) ?></p>
-          <p class="card-text">Year: <?php echo $oglas->godiste ?></p>
-          <p class="card-text">Mileage: <?php echo $oglas->kilometraza ?></p>
-          <p class="card-text">Price: <?php echo $oglas->cena ?></p>
-          <p class="card-text">Drive Type: <?php echo escape($oglas->pogon) ?></p>
-          <p class="card-text">Gearbox Type: <?php echo escape($oglas->menjac) ?></p>
-          <p class="card-text">Damage: <?php echo escape($oglas->damage) ?></p>
-          <p class="card-text">Description: <?php echo escape($oglas->opis_oglasa) ?></p>
-          <p class="card-text">User Name: <?php echo escape($prodavac->ime).' '.escape($prodavac->prezime)  ?></p>
+          <h5 class="card-title">Upravljaj korisnikom:</h5>
+          <hr> 
+          <p class="card-text">User Name: <?php echo escape($korisnik->getUsername())?></p>
+          <p class="card-text">Ime: <?php echo escape($korisnik->getIme()) ?></p>
+          <p class="card-text">Prezime: <?php echo escape($korisnik->getPrezime()) ?></p>
+          <p class="card-text">Telefon: <?php echo $korisnik->getTelefon() ?></p>
+          <p class="card-text">Tip: <?php echo $korisnik->getTip() ?></p>
+          <div class="text-center">
+            <a href="edit_user_data.php?id=<?php echo $korisnik_id?>" class="btn btn-dark">Izmeni Podatke</a>
+          </div>
+          
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<?php
-//'.$oglas->model.'
-$oglasalt = $db->get('oglasi', array('model', '=', $oglas->model))->randresult();
-        $slika_id = $db->get('oglas_ima_sliku', array('oglas_id', '=', $oglasalt->oglas_id))->first()->slika_id;
-        $slika_hash = $db->get('slika', array('slika_id', '=', $slika_id))->first()->hash;
-        $link = "car-details.php?id=" . strval($oglasalt->oglas_id);
-        echo '<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card car-card  mx-auto">';
-echo '<img src="slike_oglasa/' . $slika_hash . '" alt="Car Picture" class="card-img-top">';
-echo '<div class="card-body">';
-echo '<h5 class="card-title"><b>Model:</b> ' . $oglasalt->marka . " " .  $oglasalt->model . '</h5>';
-echo '<p class="card-text"><b>Year:</b> ' . $oglasalt->godiste . '.</p>';
-echo '<p class="card-text"><b>Price:</b> ' . $oglasalt->cena . '</p>';
-echo '<div class="text-center">
-    <a href="' . $link . '" class="btn btn-dark">View Details</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>';
-?>
 
 <!-- Include Bootstrap JS (Optional) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -7,6 +7,9 @@ if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_ured
 {
   Redirect::to('index.php');
 }
+
+$korisnik_id = Input::get('id');
+$korisnik = UserService::getInstance()->getUserById($korisnik_id);
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
         $validate = new Validate();
@@ -53,7 +56,7 @@ if (Input::exists()) {
                 $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
                 $userManager->register(Input::get('tip'), $user);
                 if($userManager) {
-                    Redirect::to('manage_user.php');
+                    Redirect::to('index.php');
                 }
                 else {
                     die();
@@ -153,27 +156,19 @@ require_once 'navbar.php';
             <div class="input-container">
                 <div class="mb-3">
                     <label for="firstname" class="form-label">First Name:</label>
-                    <input type="text" class="form-control" id="firstname" name="firstname" required>
+                    <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $korisnik->getIme()?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="lastname" class="form-label">Last Name:</label>
-                    <input type="text" class="form-control" id="lastname" name="lastname" required>
+                    <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $korisnik->getPrezime()?>"required>
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username:</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password_confirm" class="form-label">Confirm Password:</label>
-                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                    <input type="text" class="form-control" id="username" name="username" value="<?php echo $korisnik->getUsername()?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="telefon" class="form-label">Phone:</label>
-                    <input type="text" class="form-control" id="telefon" name="telefon" required>
+                    <input type="text" class="form-control" id="telefon" name="telefon" value="<?php echo $korisnik->getTelefon()?>" required>
                 </div>
                 <!-- <div class="mb-3"> Change this to select dropdown menu
                     <label for="tip" class="form-label">Tip:</label>
@@ -182,8 +177,8 @@ require_once 'navbar.php';
                 <div class="mb-3">
                 <label for="tip" class="form-label">Tip:</label>
                 <select class="form-select" id="tip" name="tip" required>
-                    <option value="novinar">Novinar</option>
-                    <option value="urednik">Urednik</option>
+                    <option <?php if ($korisnik->getTip() == 'novinar') echo 'selected'; ?> value="novinar">Novinar</option>
+                    <option <?php if ($korisnik->getTip() == 'urednik') echo 'selected'; ?> value="urednik">Urednik</option>
                 </select>
                 </div>
             </div>
