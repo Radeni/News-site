@@ -31,7 +31,7 @@ class UserService {
             $userids = UserRubrikaDAO::getInstance()->getAllUsersByRub($connection, $rub);
             $users = array();
             foreach ($userids as $id) {
-                array_push($users, UserDAO::getInstance()->getUserById($id));
+                array_push($users, UserDAO::getInstance()->getUserById($connection, $id));
             }
             return $users;
         } else {
@@ -39,7 +39,7 @@ class UserService {
             $users = array();
            
             foreach ($userids as $id) {
-                $user = UserDAO::getInstance()->getUserById($id);
+                $user = UserDAO::getInstance()->getUserById($connection, $id);
                 $usertip = $user->getTip();
                 if ($usertip == $tip) {
                     array_push($users, $user);
@@ -58,9 +58,9 @@ class UserService {
         return UserDAO::getInstance()->addUser($connection, $user);
     }
 
-    public function updateUser(User $user) {
+    public function updateUser($id, $username, $tip_korisnika) {
         $connection = DBManager::getInstance()->getConnection();
-        return UserDAO::getInstance()->updateUser($connection, $user);
+        return UserDAO::getInstance()->updateUser($connection, $id, $username, $tip_korisnika);
     }
 
     public function deleteUser($id) {
