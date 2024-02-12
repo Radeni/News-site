@@ -5,7 +5,7 @@ class Config
 {
     public static function get($path)
     {
-        $config = $GLOBALS['config'];
+        $config = $GLOBALS['my_config'];
         $path = explode('/', $path);
 
         foreach ($path as $bit) {

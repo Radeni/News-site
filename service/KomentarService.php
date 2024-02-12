@@ -18,7 +18,7 @@ class KomentarService {
         return KomentarDAO::getInstance()->getKomentarById($connection, $id);
     }
 
-    public function createKomentar(Komentar $komentar) { 
+    public function createKomentar(Komentar $komentar) {
         $connection = DBManager::getInstance()->getConnection();
         return KomentarDAO::getInstance()->addKomentar($connection, $komentar);
     }

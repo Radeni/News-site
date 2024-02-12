@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'data/Komentar.php';
 class KomentarDAO {
     private static $instance = null;
     private function __construct() {
@@ -45,6 +46,7 @@ class KomentarDAO {
         $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':id', $komentar->getIdKomentar(), PDO::PARAM_INT);
+        $stmt->bindValue(':ime', $komentar->getIme(), PDO::PARAM_STR);
         $stmt->bindValue(':tekst', $komentar->getTekst(), PDO::PARAM_STR);
         $stmt->bindValue(':lajkovi', $komentar->getLajkovi(), PDO::PARAM_INT);
         $stmt->bindValue(':dislajkovi', $komentar->getDislajkovi(), PDO::PARAM_INT);

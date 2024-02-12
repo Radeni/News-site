@@ -10,10 +10,10 @@ class DBManager
     {
         try {
             $this->pdo = new PDO(
-                'mysql:host=' . Config::get('mysql/host') . 
-                ';dbname=' . Config::get('mysql/db') . 
-                ';port=' . Config::get('mysql/port'), 
-                Config::get('mysql/username'), 
+                'mysql:host=' . Config::get('mysql/host') .
+                ';dbname=' . Config::get('mysql/db') .
+                ';port=' . Config::get('mysql/port'),
+                Config::get('mysql/username'),
                 Config::get('mysql/password')
             );
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
