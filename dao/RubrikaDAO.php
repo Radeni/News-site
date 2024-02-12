@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'data/Rubrika.php';
 class RubrikaDAO {
     private static $instance = null;
     private function __construct() {
@@ -24,6 +25,20 @@ class RubrikaDAO {
         }
 
         return null;
+    }
+
+    public function getAllRubrikas($dbConnection) {
+        $query = "SELECT * FROM Rubrika";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rubrikas = array();
+        foreach ($rows as $row) {
+            array_push($rubrikas, new Rubrika($row['idRubrika'], $row['Ime']));
+        }
+
+        return $rubrikas;
     }
 
     public function addRubrika($dbConnection, Rubrika $rubrika) {

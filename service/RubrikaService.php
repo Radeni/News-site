@@ -17,6 +17,11 @@ class RubrikaService {
         $connection = DBManager::getInstance()->getConnection();
         return RubrikaDAO::getInstance()->getRubrikaById($connection, $id);
     }
+    
+    public function getAllRubrikas() {
+        $connection = DBManager::getInstance()->getConnection();
+        return RubrikaDAO::getInstance()->getAllRubrikas($connection);
+    }
 
     public function createRubrika(Rubrika $rubrika) {
         $connection = DBManager::getInstance()->getConnection();

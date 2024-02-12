@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
+require_once 'service/RubrikaService.php';
 require_once 'core/init.php';
-
 $userManager = new UserManager();
 if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik')
 {
@@ -150,9 +150,9 @@ require_once 'navbar.php';
 
     <div class="container">
         <div class="text-center">
-            <h1 class="mt-4">Register</h1>
+            <h1 class="mt-4">Edit data</h1>
         </div>
-        <form id="registerForm" action="" method="post">
+        <form id="editDataForm" action="" method="post">
             <div class="input-container">
                 <div class="mb-3">
                     <label for="firstname" class="form-label">First Name:</label>
@@ -170,16 +170,31 @@ require_once 'navbar.php';
                     <label for="telefon" class="form-label">Phone:</label>
                     <input type="text" class="form-control" id="telefon" name="telefon" value="<?php echo $korisnik->getTelefon()?>" required>
                 </div>
-                <!-- <div class="mb-3"> Change this to select dropdown menu
-                    <label for="tip" class="form-label">Tip:</label>
-                    <input type="text" class="form-control" id="tip" name="tip" required>
-                </div>-->
                 <div class="mb-3">
                 <label for="tip" class="form-label">Tip:</label>
                 <select class="form-select" id="tip" name="tip" required>
                     <option <?php if ($korisnik->getTip() == 'novinar') echo 'selected'; ?> value="novinar">Novinar</option>
                     <option <?php if ($korisnik->getTip() == 'urednik') echo 'selected'; ?> value="urednik">Urednik</option>
                 </select>
+                </div>
+                <div class="mb-3">
+                <label for="tip" class="form-label">Rubrike:</label>
+                <?php
+                    $rubrike = RubrikaService::getInstance()->getAllRubrikas();
+                    if(count($rubrike) > 0) {
+                        foreach($rubrike as $rubrika) {
+                            echo    '<div>';
+                            echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="'. $rubrika->getIdRubrika() . '">';
+                            echo    '   <label for="'. $rubrika->getIdRubrika() . '">'. $rubrika->getIme() . '</label>';
+                            echo    '</div>';
+                        }
+                    }
+                    else {
+                        echo    '<div>';
+                        echo    'NE POSTOJI NI JEDNA RUBRIKA!!!!!!!!!!';
+                        echo    '</div>';
+                    }
+                ?>
                 </div>
             </div>
             <div class="text-center">

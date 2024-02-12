@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once 'service/RubrikaService.php';
 require_once 'core/init.php';
 
 $userManager = new UserManager();
@@ -185,6 +186,25 @@ require_once 'navbar.php';
                     <option value="novinar">Novinar</option>
                     <option value="urednik">Urednik</option>
                 </select>
+                </div>
+                <div class="mb-3">
+                <label for="tip" class="form-label">Rubrike:</label>
+                <?php
+                    $rubrike = RubrikaService::getInstance()->getAllRubrikas();
+                    if(count($rubrike) > 0) {
+                        foreach($rubrike as $rubrika) {
+                            echo    '<div>';
+                            echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="'. $rubrika->getIdRubrika() . '">';
+                            echo    '   <label for="'. $rubrika->getIdRubrika() . '">'. $rubrika->getIme() . '</label>';
+                            echo    '</div>';
+                        }
+                    }
+                    else {
+                        echo    '<div>';
+                        echo    'NE POSTOJI NI JEDNA RUBRIKA!!!!!!!!!!';
+                        echo    '</div>';
+                    }
+                ?>
                 </div>
             </div>
             <div class="text-center">
