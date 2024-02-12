@@ -194,7 +194,7 @@ require_once 'navbar.php';
                     if(count($rubrike) > 0) {
                         foreach($rubrike as $rubrika) {
                             echo    '<div>';
-                            echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="'. $rubrika->getIdRubrika() . '">';
+                            echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="rubrike[]" value="'. $rubrika->getIdRubrika() . '">';
                             echo    '   <label for="'. $rubrika->getIdRubrika() . '">'. $rubrika->getIme() . '</label>';
                             echo    '</div>';
                         }
