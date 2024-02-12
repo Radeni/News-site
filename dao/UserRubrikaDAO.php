@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+
+require_once 'data/UserRubrika.php';
 class UserRubrikaDAO {
     private static $instance = null;
 

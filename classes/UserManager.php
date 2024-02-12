@@ -53,9 +53,7 @@ class UserManager
             throw new Exception('Nepostojeci tip korisnika');
         }
         $userService = UserService::getInstance();
-        if ($userService->updateUser($user) == 0) {
-            throw new Exception('Doslo je do problema tokom azuriranja.');
-        }
+        $userService->updateUser($user);
     }
     public function find($username = null)
     {

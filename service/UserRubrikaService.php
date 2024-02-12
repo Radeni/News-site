@@ -38,7 +38,16 @@ class UserRubrikaService {
         }
         return $rubrike;
     }
-
+    public function userInRubrika($idKorisnik, $idRubrika) {
+        $connection = DBManager::getInstance()->getConnection();
+        $rubrikas =  UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
+        foreach ($rubrikas as $rubrika) {
+            if ($rubrika->getIdRubrika() == $idRubrika) {
+                return true;
+             }
+        }
+        return false;
+    }
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {

@@ -1,13 +1,15 @@
 <?php
 declare(strict_types=1);
 require_once 'service/RubrikaService.php';
+require_once 'service/UserRubrikaService.php';
 require_once 'core/init.php';
+
 $userManager = new UserManager();
 if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik')
 {
   Redirect::to('index.php');
 }
-
+if (Input::exists()){var_dump($_POST);};
 $korisnik_id = Input::get('id');
 $korisnik = UserService::getInstance()->getUserById($korisnik_id);
 if (Input::exists()) {
@@ -25,20 +27,6 @@ if (Input::exists()) {
                 'min' => 2,
                 'max' => 45,
             ),
-            'username' => array(
-                'required' => true,
-                'min' => 5,
-                'max' => 80,
-                'uniqueUserUsername' => 'HMMMMMMMMMM'
-            ),
-            'password' => array(
-                'required' => true,
-                'min' => 3
-            ),
-            'password_confirm' => array(
-                'required' => true,
-                'matches' => 'password'
-            ),
             'telefon' => array(
                 'required' => true,
                 'min' => 5,
@@ -53,14 +41,14 @@ if (Input::exists()) {
         if ($validation->passed()) {
 
             try {
-                $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
-                $userManager->register(Input::get('tip'), $user);
-                if($userManager) {
-                    Redirect::to('index.php');
+                $user = new User($korisnik_id, Input::get('username'),null, Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
+                $userManager->update($user);
+                UserRubrikaService::getInstance()->purgeUser($user->getIdKorisnik());
+                foreach (Input::get('rubrike') as $rubrika) {
+                    UserRubrikaService::getInstance()->addUserToRubrika($user->getIdKorisnik(),$rubrika);
                 }
-                else {
-                    die();
-                }
+                Redirect::to('manage_user.php?id=' . $korisnik_id);
+
             } catch(Exception $e) {
                 die($e->getMessage());
             }
@@ -184,14 +172,18 @@ require_once 'navbar.php';
                     if(count($rubrike) > 0) {
                         foreach($rubrike as $rubrika) {
                             echo    '<div>';
+                            if (UserRubrikaService::getInstance()->userInRubrika($korisnik_id,$rubrika->getIdRubrika())) {
+                                echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="rubrike[]" value="'. $rubrika->getIdRubrika() . '" checked>';
+                            } else {
                             echo    '   <input type="checkbox" id="'. $rubrika->getIdRubrika() . '" name="rubrike[]" value="'. $rubrika->getIdRubrika() . '">';
+                            }
                             echo    '   <label for="'. $rubrika->getIdRubrika() . '">'. $rubrika->getIme() . '</label>';
                             echo    '</div>';
                         }
                     }
                     else {
                         echo    '<div>';
-                        echo    'NE POSTOJI NI JEDNA RUBRIKA!!!!!!!!!!';
+                        echo    'NE POSTOJI NI JEDNA RUBRIKA U SISTEMU!!!!!!!!!!';
                         echo    '</div>';
                     }
                 ?>
@@ -199,7 +191,7 @@ require_once 'navbar.php';
             </div>
             <div class="text-center">
                  <input type="hidden" value="<?php echo Token::generate(); ?>"  name="token" class="box"/>
-                <button type="submit" class="btn btn-dark" >Register</button>
+                <button type="submit" class="btn btn-dark" >Edit</button>
             </div>
         </form>
     </div>

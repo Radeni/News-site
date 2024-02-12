@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 require_once 'service/RubrikaService.php';
+
+require_once 'service/UserRubrikaService.php';
 require_once 'core/init.php';
 
 $userManager = new UserManager();
@@ -53,6 +55,9 @@ if (Input::exists()) {
             try {
                 $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
                 $user_id = $userManager->register(Input::get('tip'), $user);
+                foreach (Input::get('rubrike') as $rubrika) {
+                    UserRubrikaService::getInstance()->addUserToRubrika($user_id,$rubrika);
+                }
                 if($user_id) {
                     Redirect::to('manage_user.php?id=' . $user_id);
                 }
