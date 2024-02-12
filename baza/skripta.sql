@@ -26,6 +26,23 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `news`.`User`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `news`.`User` (
+  `idKorisnik` INT NOT NULL AUTO_INCREMENT,
+  `Username` VARCHAR(80) NOT NULL,
+  `Password` VARCHAR(100) NOT NULL,
+  `Ime` VARCHAR(45) NOT NULL,
+  `Prezime` VARCHAR(45) NOT NULL,
+  `Telefon` VARCHAR(12) NOT NULL,
+  `Tip` ENUM("novinar", "urednik", "glavni_urednik") NOT NULL,
+  PRIMARY KEY (`idKorisnik`),
+  UNIQUE INDEX `idKorisnik_UNIQUE` (`idKorisnik` ASC) VISIBLE,
+  UNIQUE INDEX `Username_UNIQUE` (`Username` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `news`.`Vest`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `news`.`Vest` (
@@ -38,12 +55,19 @@ CREATE TABLE IF NOT EXISTS `news`.`Vest` (
   `Dislajkovi` INT NOT NULL,
   `Status` ENUM('draft', 'odobrena') NOT NULL DEFAULT 'draft',
   `idRubrika` INT NOT NULL,
-  PRIMARY KEY (`idVest`, `idRubrika`),
+  `idKorisnik` INT NOT NULL,
+  PRIMARY KEY (`idVest`, `idRubrika`, `idKorisnik`),
   UNIQUE INDEX `idVest_UNIQUE` (`idVest` ASC) VISIBLE,
   INDEX `fk_Vest_Rubrika1_idx` (`idRubrika` ASC) VISIBLE,
+  INDEX `fk_Vest_User1_idx` (`idKorisnik` ASC) VISIBLE,
   CONSTRAINT `fk_Vest_Rubrika1`
     FOREIGN KEY (`idRubrika`)
     REFERENCES `news`.`Rubrika` (`idRubrika`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Vest_User1`
+    FOREIGN KEY (`idKorisnik`)
+    REFERENCES `news`.`User` (`idKorisnik`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -67,23 +91,6 @@ CREATE TABLE IF NOT EXISTS `news`.`Komentar` (
     REFERENCES `news`.`Vest` (`idVest`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `news`.`User`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `news`.`User` (
-  `idKorisnik` INT NOT NULL AUTO_INCREMENT,
-  `Username` VARCHAR(80) NOT NULL,
-  `Password` VARCHAR(100) NOT NULL,
-  `Ime` VARCHAR(45) NOT NULL,
-  `Prezime` VARCHAR(45) NOT NULL,
-  `Telefon` VARCHAR(45) NOT NULL,
-  `Tip` ENUM("novinar", "urednik", "glavni_urednik") NOT NULL,
-  PRIMARY KEY (`idKorisnik`),
-  UNIQUE INDEX `idKorisnik_UNIQUE` (`idKorisnik` ASC) VISIBLE,
-  UNIQUE INDEX `Username_UNIQUE` (`Username` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 

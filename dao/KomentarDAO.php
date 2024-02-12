@@ -45,6 +45,9 @@ class KomentarDAO {
         $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':id', $komentar->getIdKomentar(), PDO::PARAM_INT);
+        $stmt->bindValue(':tekst', $komentar->getTekst(), PDO::PARAM_STR);
+        $stmt->bindValue(':lajkovi', $komentar->getLajkovi(), PDO::PARAM_INT);
+        $stmt->bindValue(':dislajkovi', $komentar->getDislajkovi(), PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->rowCount();

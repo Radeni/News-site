@@ -10,9 +10,10 @@ class Vest {
     private $dislajkovi;
     private $status;
     private $idRubrika;
+    private $idKorisnik;
 
     // Constructor
-    public function __construct($idVest, $naslov, $tekst, $tagovi, $datum, $lajkovi, $dislajkovi, $status, $idRubrika) {
+    public function __construct($idVest, $naslov, $tekst, $tagovi, $datum, $lajkovi, $dislajkovi, $status, $idRubrika, $idKorisnik) {
         $this->idVest = $idVest;
         $this->naslov = $naslov;
         $this->tekst = $tekst;
@@ -22,6 +23,7 @@ class Vest {
         $this->dislajkovi = $dislajkovi;
         $this->status = $status;
         $this->idRubrika = $idRubrika;
+        $this->idKorisnik = $idKorisnik;
     }
 
     // Getters and Setters
@@ -60,6 +62,9 @@ class Vest {
     public function getIdRubrika() {
         return $this->idRubrika;
     }
+    public function getIdKorisnik() {
+        return $this->idKorisnik;
+    }
 
     public function setIdVest($idVest) {
         $this->idVest = $idVest;
@@ -97,6 +102,10 @@ class Vest {
         $this->idRubrika = $idRubrika;
     }
     
+    public function setKorisnik($idKorisnik) {
+        $this->idKorisnik = $idKorisnik;
+    }
+
     public function toJson() {
         $data = [
             'idVest' => $this->idVest,
@@ -107,7 +116,8 @@ class Vest {
             'lajkovi' => $this->lajkovi,
             'dislajkovi' => $this->dislajkovi,
             'status' => $this->status,
-            'idRubrika' => $this->idRubrika
+            'idRubrika' => $this->idRubrika,
+            'idKorisnik' => $this->idKorisnik
         ];
 
         return json_encode($data);
