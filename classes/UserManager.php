@@ -41,10 +41,11 @@ class UserManager
             throw new Exception('Nepostojeci tip korisnika');
         }
         $userService = UserService::getInstance();
-        $user = $userService->registerUser($user);
+        $user_id = $userService->registerUser($user);
         if (!$user) {
             throw new Exception('Desio se problem prilikom kreiranja naloga!');
         }
+        return $user_id;
     }
     public function update($username, $password, $id, $tip_korisnika)
     {
