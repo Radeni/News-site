@@ -4,24 +4,50 @@ require_once 'service/KomentarService.php';
 require_once 'core/init.php';
 var_dump($_POST);
 if($_POST) {
-
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.DefinitionID', 'myCustomDefinition');
     $config->set('HTML.DefinitionRev', 1);
+    $config->set('HTML.Doctype', 'HTML 4.01 Transitional'); // Use a doctype that supports inline styles
     $config->set('HTML.SafeIframe', true);
-    $config->set('URI.SafeIframeRegexp','%^(https://www.youtube.com/embed/)%');
-    
-    $config->set('CSS.AllowedProperties', array('position', 'padding-bottom', 'height', 'width', 'top', 'left'));
-    $config->set('HTML.AllowedAttributes', 'div.data-oembed-url, iframe.src, iframe.frameborder, iframe.allowfullscreen, iframe.style');
+    $config->set('URI.SafeIframeRegexp','%^(https://www.youtube.com/embed/)%'); // Allows YouTube iframes
+    $config->set('CSS.AllowedProperties', array('position', 'padding-bottom', 'height', 'width', 'top', 'left', 'aspect-ratio'));
+    $config->set('HTML.AllowedAttributes', 'iframe.src, iframe.frameborder, iframe.allowfullscreen, iframe.style, iframe.allow, div.style, div.data-oembed-url, img.src, img.alt, img.style, img.width, img.height');
     
     $def = $config->maybeGetRawHTMLDefinition();
-    
     if ($def) {
-        // Allowing the <figure> and <div> elements with custom attributes
-        $def->addElement('figure', 'Block', 'Flow', 'Common', array('class' => 'Text'));
-        $div = $def->addBlankElement('div');
+        // Add the <figure> element
+        $def->addElement(
+            'figure',   // Tag name
+            'Block',    // Content set
+            'Optional: (figcaption, Flow) | Flow',
+            'Common',   // Attribute collection
+            array()     // Attributes
+        );
+    
+        // Add custom attributes to existing elements
+        $def->addAttribute('div', 'data-oembed-url', 'Text');
+        
+        // Allow the <iframe> element with specific attributes
+        $def->addElement(
+            'iframe',   // Tag name
+            'Inline',   // Content set
+            'Empty',    // Allowed children
+            'Common',   // Attribute collection
+            array(      // Attributes
+                'src' => 'URI#embedded', // Allows embedding URLs, which might need further customization
+                'frameborder' => 'Text',
+                'allowfullscreen' => 'Bool',
+                'allow' => 'Text',
+                'style' => 'Text',
+            )
+        );
+        $img = $def->addBlankElement('img');
+        $img->attr['style'] = new HTMLPurifier_AttrDef_Enum(array('aspect-ratio'));
+        $img->attr['width'] = 'Length';
+        $img->attr['height'] = 'Length';
+        $img->attr['src'] = new HTMLPurifier_AttrDef_URI();
+        $style = $def->info_global_attr['style'] = new HTMLPurifier_AttrDef_CSS();
     }
-
     $purifier = new HTMLPurifier($config);
     $clean_html = $purifier->purify($_POST['content']);
     $komentar = KomentarService::getInstance()->getKomentarById(2);
