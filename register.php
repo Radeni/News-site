@@ -51,9 +51,9 @@ if (Input::exists()) {
 
             try {
                 $user = new User(null, Input::get('username'), Input::get('password'), Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
-                $userManager->register(Input::get('tip'), $user);
-                if($userManager) {
-                    Redirect::to('manage_user.php');
+                $user_id = $userManager->register(Input::get('tip'), $user);
+                if($user_id) {
+                    Redirect::to('manage_user.php?id=' . $user_id);
                 }
                 else {
                     die();
