@@ -1,8 +1,12 @@
 <?php
 require_once 'vendor/autoload.php';
-require_once 'service/KomentarService.php';
+require_once 'service/VestService.php';
+require_once 'service/RubrikaService.php';
 require_once 'core/init.php';
-var_dump($_POST);
+
+$vest_id = Input::get('id');
+$vest = VestService::getInstance()->getVestById($vest_id);
+
 if($_POST) {
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.DefinitionID', 'myCustomDefinition');
@@ -49,12 +53,16 @@ if($_POST) {
         $style = $def->info_global_attr['style'] = new HTMLPurifier_AttrDef_CSS();
     }
     $purifier = new HTMLPurifier($config);
-    $clean_html = $purifier->purify($_POST['content']);
-    $komentar = KomentarService::getInstance()->getKomentarById(2);
-    $komentar->setTekst($clean_html);
-    KomentarService::getInstance()->updateKomentar($komentar);
+    $clean_html = $purifier->purify($_POST['tekst']);
+    
+    $vest->setTekst($clean_html);
+    VestService::getInstance()->updateVest($vest);
 }
+
+require_once('navbar.php');
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,8 +73,14 @@ if($_POST) {
     <script src="ckeditor5-41.1.0/build/ckeditor.js"></script>
 </head>
 <body>
+    <h5 class="card-title"><?php echo escape($vest->getNaslov())?></h5>
+          <hr> 
+          <p class="card-text">Datum: <?php echo escape($vest->getDatum())?></p>
+          <p class="card-text">Rubrika: <?php echo escape(RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika())->getIme()) ?></p>   
+          <a href="editvestnaslov.php?id=' . $vest_id . '" class="btn btn-dark">Promeni Vest</a>
+          <a href="obrisivest.php?id=' . $vest_id . '" class="btn btn-danger">Obrisi Vest</a>
     <form id="editDataForm" action="" method="post">
-        <textarea name="content" id="editor">Ovde unesite vaš tekst...</textarea>
+        <textarea name="tekst" id="editor"><?php echo($vest->getTekst()) ?></textarea>
         <script>
             ClassicEditor
                 .create(document.querySelector('#editor'), {
@@ -81,7 +95,11 @@ if($_POST) {
                     console.error('There was a problem initializing the editor.', error);
                 });
             </script>
-        <button type="submit" class="btn btn-dark" >Edit</button>
+        <div>
+            <button type="submit" class="btn btn-dark" >Sacuvaj</button>
+            <button type="button" class="btn btn-dark" >Pregledaj</button>
+            <button type="button" class="btn btn-dark" >Prosledi Uredniku</button>
+        </div>
     </form>
 </body>
 </html>

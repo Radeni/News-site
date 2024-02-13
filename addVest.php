@@ -1,9 +1,57 @@
 <?php
 declare(strict_types=1);
+require_once 'vendor/autoload.php';
 require_once 'service/UserRubrikaService.php';
 require_once 'data/Vest.php';
 require_once 'service/VestService.php';
 require_once 'core/init.php';
+
+  $config = HTMLPurifier_Config::createDefault();
+  $config->set('HTML.DefinitionID', 'myCustomDefinition');
+  $config->set('HTML.DefinitionRev', 1);
+  $config->set('HTML.Doctype', 'HTML 4.01 Transitional'); // Use a doctype that supports inline styles
+  $config->set('HTML.SafeIframe', true);
+  $config->set('URI.SafeIframeRegexp','%^(https://www.youtube.com/embed/)%'); // Allows YouTube iframes
+  $config->set('CSS.AllowedProperties', array('position', 'padding-bottom', 'height', 'width', 'top', 'left', 'aspect-ratio'));
+  $config->set('HTML.AllowedAttributes', 'iframe.src, iframe.frameborder, iframe.allowfullscreen, iframe.style, iframe.allow, div.style, div.data-oembed-url, img.src, img.alt, img.style, img.width, img.height');
+  
+$def = $config->maybeGetRawHTMLDefinition();
+if ($def) {
+    // Add the <figure> element
+    $def->addElement(
+        'figure',   // Tag name
+        'Block',    // Content set
+        'Optional: (figcaption, Flow) | Flow',
+        'Common',   // Attribute collection
+        array()     // Attributes
+    );
+
+    // Add custom attributes to existing elements
+    $def->addAttribute('div', 'data-oembed-url', 'Text');
+    
+    // Allow the <iframe> element with specific attributes
+    $def->addElement(
+        'iframe',   // Tag name
+        'Inline',   // Content set
+        'Empty',    // Allowed children
+        'Common',   // Attribute collection
+        array(      // Attributes
+            'src' => 'URI#embedded', // Allows embedding URLs, which might need further customization
+            'frameborder' => 'Text',
+            'allowfullscreen' => 'Bool',
+            'allow' => 'Text',
+            'style' => 'Text',
+        )
+    );
+    $img = $def->addBlankElement('img');
+    $img->attr['style'] = new HTMLPurifier_AttrDef_Enum(array('aspect-ratio'));
+    $img->attr['width'] = 'Length';
+    $img->attr['height'] = 'Length';
+    $img->attr['src'] = new HTMLPurifier_AttrDef_URI();
+    $style = $def->info_global_attr['style'] = new HTMLPurifier_AttrDef_CSS();
+}
+$purifier = new HTMLPurifier($config);
+
 
 $userManager = new UserManager();
 if (!$userManager->isLoggedIn()) {
@@ -19,10 +67,6 @@ if (Input::exists()) {
                 'required' => true,
                 'max' => 100
             ),
-            'tekst' => array(
-                'required' => true,
-                'max' => 3000
-            ),
             'tagovi' => array(
                 'required' => true,
                 'max' => 100
@@ -33,9 +77,9 @@ if (Input::exists()) {
         if ($validation->passed()) {
             // update
             try {
-                $vest = new Vest(null, Input::get('naslov'), Input::get('tekst'), Input::get('tagovi'),date('Y-m-d'),0,0,'draft',Input::get('rubrika'), $idKorisnik);
-                VestService::getInstance()->createVest($vest);
-                die();
+                $vest = new Vest(null, Input::get('naslov'), '', Input::get('tagovi'),date('Y-m-d'),0,0,'draft',Input::get('rubrika'), $idKorisnik);
+                $vest_id = VestService::getInstance()->createVest($vest);
+                Redirect::to('editvest.php?id=' . $vest_id);
             } catch (Exception $e) {
                 die($e->getMessage());
             }
@@ -46,13 +90,14 @@ if (Input::exists()) {
         }
     }
 }
+
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>Add New Car</title>
+  <title>Dodaj vest</title>
   <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
   <!-- Include Toastr CSS -->
@@ -61,7 +106,8 @@ require_once 'navbar.php';
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Include Toastr JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  <!-- Custom CSS -->
+  <!-- CKEditor-->
+  <script src="ckeditor5-41.1.0/build/ckeditor.js"></script>
   <style>
     .navbar {
       background-color: #212529;
@@ -119,9 +165,6 @@ require_once 'navbar.php';
 <body>
 
 <div class="container">
-  <div class="text-center">
-    <h1 class="mt-4">Add New Car</h1>
-  </div>
   <div id="authenticatedDiv">
     <!-- Only authenticated users can access this form -->
     <form id="carForm" enctype="multipart/form-data" method="post" action="">
@@ -130,10 +173,7 @@ require_once 'navbar.php';
           <label for="naslov" class="form-label">Naslov:</label>
           <input type="text" class="form-control" id="naslov" name="naslov" required>
         </div>
-        <div class="mb-3">
-          <label for="tekst" class="form-label">Tekst:</label>
-          <input type="text" class="form-control" id="tekst" name="tekst" required>
-        </div>
+        
         <div class="mb-3">
           <label for="tagovi" class="form-label">Tagovi:</label>
           <input type="text" class="form-control" id="tagovi" name="tagovi" required>
@@ -155,17 +195,11 @@ require_once 'navbar.php';
         </div>
         <div class="text-center">
         <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-        <button type="submit" class="btn btn-dark">Add Vest</button>
+        <button type="submit" class="btn btn-dark">Dodaj Vest</button>
         </div>
       </div>
     </form>
     <div class="row my-2"></div>
-  </div>
-  <div id="notAuthenticatedDiv" style="display: none;">
-    <!-- Show a message or redirect to login page for non-authenticated users -->
-    <div class="text-center">
-      <p>Please <a th:href="@{/login}">login</a> to add a new car.</p>
-    </div>
   </div>
 </div>
 <!-- Include Bootstrap JS (Optional) -->

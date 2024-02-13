@@ -31,20 +31,20 @@ $user = new UserManager();
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <style>
     .navbar {
-      background-color: #ff0000;
+      background-color: #212529;
     }
 
     .navbar-brand {
-      color: #ffffff;
+      color: #f8f9fa;
       font-weight: bold;
     }
 
     .navbar-nav .nav-link {
-      color: #ffffff;
+      color: #f8f9fa;
     }
 
     .navbar-nav .nav-link:hover {
-      color: #383838;
+      color: #adb5bd;
     }
 
     .navbar-nav .active {
@@ -80,8 +80,8 @@ $user = new UserManager();
               echo '<a class="nav-link" href="register.php">Registruj novinara</a>';
             } else
             {
-              echo '<a class="nav-link" href="addcar.php">Napisi clanak</a>';
-              echo '<a class="nav-link" href="cars_user.php">Moji clanci</a>';
+              echo '<a class="nav-link" href="addVest.php">Napisi clanak</a>';
+              echo '<a class="nav-link" href="moje_vesti.php">Moji clanci</a>';
             }
             echo '<a class="nav-link" href="logout.php">Logout</a>';
             

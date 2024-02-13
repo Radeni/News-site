@@ -51,20 +51,20 @@ require_once 'navbar.php';
   <!-- Custom CSS -->
   <style>
     .navbar {
-      background-color: #ff0000;
+      background-color: #212529;
     }
 
     .navbar-brand {
-      color: #ffffff;
+      color: #f8f9fa;
       font-weight: bold;
     }
 
     .navbar-nav .nav-link {
-      color: #ffffff;
+      color: #f8f9fa;
     }
 
     .navbar-nav .nav-link:hover {
-      color: #383838;
+      color: #adb5bd;
     }
 
     .navbar-nav .active {

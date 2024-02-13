@@ -49,6 +49,7 @@ class VestDAO {
         $stmt = $dbConnection->prepare($query);
 
         $stmt->bindValue(':id', $vest->getIdVest());
+        $stmt->bindValue(':naslov', $vest->getNaslov(), PDO::PARAM_STR);
         $stmt->bindValue(':tekst', $vest->getTekst(), PDO::PARAM_STR);
         $stmt->bindValue(':tagovi', $vest->getTagovi(), PDO::PARAM_STR);
         $stmt->bindValue(':datum', $vest->getDatum(), PDO::PARAM_STR);

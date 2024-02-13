@@ -143,11 +143,11 @@ require_once 'navbar.php';
         <form id="editDataForm" action="" method="post">
             <div class="input-container">
                 <div class="mb-3">
-                    <label for="firstname" class="form-label">First Name:</label>
+                    <label for="firstname" class="form-label">Ime:</label>
                     <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $korisnik->getIme()?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="lastname" class="form-label">Last Name:</label>
+                    <label for="lastname" class="form-label">Prezime:</label>
                     <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $korisnik->getPrezime()?>"required>
                 </div>
                 <div class="mb-3">
@@ -155,7 +155,7 @@ require_once 'navbar.php';
                     <input type="text" class="form-control" id="username" name="username" value="<?php echo $korisnik->getUsername()?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="telefon" class="form-label">Phone:</label>
+                    <label for="telefon" class="form-label">Telefon:</label>
                     <input type="text" class="form-control" id="telefon" name="telefon" value="<?php echo $korisnik->getTelefon()?>" required>
                 </div>
                 <div class="mb-3">
