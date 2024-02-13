@@ -121,6 +121,22 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
+-- Data for table `news`.`Rubrika`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `news`;
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (1, 'Politika');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (2, 'Svet');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (3, 'Drustvo');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (4, 'Sport');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (5, 'Ukrajina');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (6, 'Izrael');
+INSERT INTO `news`.`Rubrika` (`idRubrika`, `Ime`) VALUES (7, 'Humor');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
 -- Data for table `news`.`User`
 -- -----------------------------------------------------
 START TRANSACTION;
