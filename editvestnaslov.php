@@ -5,11 +5,18 @@ require_once 'data/Vest.php';
 require_once 'service/VestService.php';
 require_once 'core/init.php';
 
+
 $userManager = new UserManager();
-if (!$userManager->isLoggedIn()) {
+$user = new UserManager();
+if (!$user->isLoggedIn())
+{
     Redirect::to('index.php');
 }
-$idKorisnik = $userManager->data()->getIdKorisnik();
+$vest_id = Input::get('id');
+$vest = VestService::getInstance()->getVestById($vest_id);
+if($vest->getIdKorisnik() != $user->data()->getIdKorisnik()) {
+    Redirect::to('index.php');
+}
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
         $validate = new Validate();
@@ -29,8 +36,11 @@ if (Input::exists()) {
         if ($validation->passed()) {
             // update
             try {
-                $vest = new Vest(null, Input::get('naslov'), '', Input::get('tagovi'),date('Y-m-d'),0,0,'draft',Input::get('rubrika'), $idKorisnik);
-                $vest_id = VestService::getInstance()->createVest($vest);
+                $vest->setNaslov(Input::get('naslov'));
+                $vest->setTagovi(Input::get('tagovi'));
+                $vest->setIdRubrika(Input::get('rubrika'));
+                $vest_id = VestService::getInstance()->updateVest($vest);
+                die();
                 Redirect::to('editvest.php?id=' . $vest_id);
             } catch (Exception $e) {
                 die($e->getMessage());
@@ -58,6 +68,8 @@ require_once 'navbar.php';
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Include Toastr JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <!-- CKEditor-->
+  <script src="ckeditor5-41.1.0/build/ckeditor.js"></script>
   <style>
     .navbar {
       background-color: #212529;
@@ -121,22 +133,27 @@ require_once 'navbar.php';
       <div class="input-container">
         <div class="mb-3">
           <label for="naslov" class="form-label">Naslov:</label>
-          <input type="text" class="form-control" id="naslov" name="naslov" required>
+          <input type="text" class="form-control" id="naslov" name="naslov" value="<?php echo escape($vest->getNaslov()) ?>" required>
         </div>
         
         <div class="mb-3">
           <label for="tagovi" class="form-label">Tagovi:</label>
-          <input type="text" class="form-control" id="tagovi" name="tagovi" required>
+          <input type="text" class="form-control" id="tagovi" name="tagovi" value="<?php echo escape($vest->getTagovi()) ?>" required>
         </div>
         
         <div class="mb-3">
         <label for="rubrike" class="form-label">Rubrike:</label>
         <?php
-            $rubrike = UserRubrikaService::getInstance()->getUserRubrikas($idKorisnik);
+            $rubrike = UserRubrikaService::getInstance()->getUserRubrikas($user->data()->getIdKorisnik());
             echo '<select id="rubrika" name="rubrika" style="width: 100%;">';
             if(count($rubrike) > 0) {
                 foreach($rubrike as $rubrika) {
-                    echo '<option value="'. $rubrika->getIdRubrika() .'"'. $selected .'>'. $rubrika->getIme() .'</option>';
+                    if($rubrika->getIdRubrika() === $vest->getIdRubrika()) {
+                        echo '<option value="'. $rubrika->getIdRubrika() .'"'. $selected .'selected>'. $rubrika->getIme() .'</option>';
+                    }
+                    else {
+                        echo '<option value="'. $rubrika->getIdRubrika() .'"'. $selected .'>'. $rubrika->getIme() .'</option>';
+                    }
                 }
             } else {
                 echo '<option disabled>NI JEDNA RUBRIKA VAM NIJE DODELJENA!!!!!!!!!!</option>';

@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `news`.`Vest` (
   `Datum` DATE NOT NULL,
   `Lajkovi` INT NOT NULL,
   `Dislajkovi` INT NOT NULL,
-  `Status` ENUM('draft', 'odobrena') NOT NULL DEFAULT 'draft',
+  `Status` ENUM('DRAFT', 'ODOBRENA', 'DRAFT_PENDING_APPROVAL') NOT NULL DEFAULT 'DRAFT_PENDING_APPROVAL',
   `idRubrika` INT NOT NULL,
   `idKorisnik` INT NOT NULL,
   PRIMARY KEY (`idVest`, `idRubrika`, `idKorisnik`),

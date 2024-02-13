@@ -17,7 +17,10 @@ class KomentarService {
         $connection = DBManager::getInstance()->getConnection();
         return KomentarDAO::getInstance()->getKomentarById($connection, $id);
     }
-
+    public function getAllKomentariByVestId($vest_id) {
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->getAllKomentariByVestId($connection, $vest_id);
+    }
     public function createKomentar(Komentar $komentar) {
         $connection = DBManager::getInstance()->getConnection();
         return KomentarDAO::getInstance()->addKomentar($connection, $komentar);

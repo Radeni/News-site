@@ -3,11 +3,18 @@ require_once 'vendor/autoload.php';
 require_once 'service/VestService.php';
 require_once 'service/RubrikaService.php';
 require_once 'core/init.php';
-
+$user = new UserManager();
+if (!$user->isLoggedIn())
+{
+    Redirect::to('index.php');
+}
 $vest_id = Input::get('id');
 $vest = VestService::getInstance()->getVestById($vest_id);
+if($vest->getIdKorisnik() != $user->data()->getIdKorisnik()) {
+    Redirect::to('index.php');
+}
 
-if($_POST) {
+if(Input::exists()) {
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.DefinitionID', 'myCustomDefinition');
     $config->set('HTML.DefinitionRev', 1);
@@ -53,13 +60,13 @@ if($_POST) {
         $style = $def->info_global_attr['style'] = new HTMLPurifier_AttrDef_CSS();
     }
     $purifier = new HTMLPurifier($config);
-    $clean_html = $purifier->purify($_POST['tekst']);
+    $clean_html = $purifier->purify(Input::get('tekst'));
     
     $vest->setTekst($clean_html);
     VestService::getInstance()->updateVest($vest);
 }
 
-require_once('navbar.php');
+require_once 'navbar.php';
 ?>
 
 
@@ -76,11 +83,12 @@ require_once('navbar.php');
     <h5 class="card-title"><?php echo escape($vest->getNaslov())?></h5>
           <hr> 
           <p class="card-text">Datum: <?php echo escape($vest->getDatum())?></p>
-          <p class="card-text">Rubrika: <?php echo escape(RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika())->getIme()) ?></p>   
-          <a href="editvestnaslov.php?id=' . $vest_id . '" class="btn btn-dark">Promeni Vest</a>
-          <a href="obrisivest.php?id=' . $vest_id . '" class="btn btn-danger">Obrisi Vest</a>
+          <p class="card-text">Rubrika: <?php echo escape(RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika())->getIme()) ?></p>
+          <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
+          <a href="editvestnaslov.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Promeni Vest</a>
+          <a href="obrisivest.php?id=<?php echo $vest_id ?>" class="btn btn-danger">Obrisi Vest</a>
     <form id="editDataForm" action="" method="post">
-        <textarea name="tekst" id="editor"><?php echo($vest->getTekst()) ?></textarea>
+        <textarea name="tekst" id="editor"><?php echo escape($vest->getTekst()) ?></textarea>
         <script>
             ClassicEditor
                 .create(document.querySelector('#editor'), {
@@ -97,8 +105,8 @@ require_once('navbar.php');
             </script>
         <div>
             <button type="submit" class="btn btn-dark" >Sacuvaj</button>
-            <button type="button" class="btn btn-dark" >Pregledaj</button>
-            <button type="button" class="btn btn-dark" >Prosledi Uredniku</button>
+            <a href="vest.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Pregledaj</a>
+            <a href="posalji_uredniku.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Prosledi Uredniku</a>
         </div>
     </form>
 </body>

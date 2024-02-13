@@ -27,6 +27,21 @@ class KomentarDAO {
         return null;
     }
 
+    public function getAllKomentariByVestId($dbConnection, $vest_id) {
+        $query = "SELECT * FROM Komentar WHERE idVest = :id_vest";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':id_vest', $vest_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $komentari = array();
+        foreach ($rows as $row) {
+            array_push($komentari, new Komentar($row['idKomentar'], $row['Ime'], $row['Tekst'], $row['Lajkovi'], $row['Dislajkovi'], $row['idVest']));
+        }
+
+        return $komentari;
+    }
+
     public function addKomentar($dbConnection, Komentar $komentar) {
         $query = "INSERT INTO Komentar (Ime, Tekst, Lajkovi, Dislajkovi, idVest) VALUES (:ime, :tekst, :lajkovi, :dislajkovi, :idVest)";
         $stmt = $dbConnection->prepare($query);
