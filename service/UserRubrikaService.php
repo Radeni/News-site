@@ -30,10 +30,10 @@ class UserRubrikaService {
 
     public function getUserRubrikas($idKorisnik) {
         $connection = DBManager::getInstance()->getConnection();
-        $rubrikas =  UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
+        $userRubrikas =  UserRubrikaDAO::getInstance()->getUserRubrikas($connection, $idKorisnik);
         $rubrike = array();
-        foreach ($rubrikas as $rubrika_id) {
-            $rubrika = RubrikaDAO::getInstance()->getRubrikaById($connection, $rubrika_id);
+        foreach ($userRubrikas as $userRubrika) {
+            $rubrika = RubrikaDAO::getInstance()->getRubrikaById($connection, $userRubrika->getIdRubrika());
             array_push($rubrike, $rubrika);
         }
         return $rubrike;
