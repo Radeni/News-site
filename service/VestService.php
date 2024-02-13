@@ -22,6 +22,16 @@ class VestService {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->addVest($connection, $vest);
     }
+    public function likeVest($vest_id) {
+        $vest = self::getVestById($vest_id);
+        $vest->setLajkovi($vest->getLajkovi() + 1);
+        return self::updateVest($vest);
+    }
+    public function dislikeVest($vest_id) {
+        $vest = self::getVestById($vest_id);
+        $vest->setDislajkovi($vest->getDislajkovi() + 1);
+        return self::updateVest($vest);
+    }
 
     public function updateVest(Vest $vest) {
         $connection = DBManager::getInstance()->getConnection();

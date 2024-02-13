@@ -21,6 +21,18 @@ class KomentarService {
         $connection = DBManager::getInstance()->getConnection();
         return KomentarDAO::getInstance()->getAllKomentariByVestId($connection, $vest_id);
     }
+
+    public function likeKomentar($komentar_id) {
+        $komentar = self::getKomentarById($komentar_id);
+        $komentar->setLajkovi($komentar->getLajkovi() + 1);
+        return self::updateKomentar($komentar);
+    }
+    public function dislikeKomentar($komentar_id) {
+        $komentar = self::getKomentarById($komentar_id);
+        $komentar->setDislajkovi($komentar->getDislajkovi() + 1);
+        return self::updateKomentar($komentar);
+    }
+
     public function createKomentar(Komentar $komentar) {
         $connection = DBManager::getInstance()->getConnection();
         return KomentarDAO::getInstance()->addKomentar($connection, $komentar);

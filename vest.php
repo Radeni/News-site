@@ -83,8 +83,8 @@ require_once 'navbar.php';
 </head>
 <body>
 <div class="container mt-4">
-<h1 class="card-title"><?php echo escape($vest->getNaslov())?></h1>
-<h3 class="card-title"><?php echo escape($rubrika->getIme())?></h3>
+    <h1 class="card-title"><?php echo escape($vest->getNaslov())?></h1>
+    <h3 class="card-title"><?php echo escape($rubrika->getIme())?></h3>
     <?php
     $userManager = new UserManager();
     if($userManager->isLoggedIn()) {
@@ -94,18 +94,23 @@ require_once 'navbar.php';
         }
     }
     ?>
-    
-    <div class="col-md-8">
-      <div class="card">
+
+    <div class="card"> <!-- Removed col-md-8 class -->
         <div class="card-body">
-          <p class="card-text"><?php echo escape($vest->getDatum()) ?></p>
-          <p class="card-text"><?php echo $vest->getTekst() ?></p>
-          <p class="card-text"><?php echo $vest->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i>    <?php echo $vest->getDislajkovi() ?><i class="bi bi-hand-thumbs-down-fill"></i></p>
-          <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
+            <p class="card-text"><?php echo escape($vest->getDatum()) ?></p>
+            <p class="card-text"><?php echo $vest->getTekst() ?></p>
+            <p class="card-text"><?php echo $vest->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i>    <?php echo $vest->getDislajkovi() ?><i class="bi bi-hand-thumbs-down-fill"></i></p>
+            <p class="card-text">
+                <span id="likesCount"><?php echo $vest->getLajkovi() ?></span>
+                <button id="likeButton" class="btn btn-link"><i class="bi bi-hand-thumbs-up"></i></button>
+                <span id="dislikesCount"><?php echo $vest->getDislajkovi() ?></span>
+                <button id="dislikeButton" class="btn btn-link"><i class="bi bi-hand-thumbs-down"></i></button>
+            </p>
+            <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
         </div>
-      </div>
     </div>
 </div>
+
 <div class="container mt-4">
         <h2>Post Comment</h2>
         <form action="post_comment.php" method="POST">
@@ -134,6 +139,12 @@ require_once 'navbar.php';
                 <h5 class="card-title"><?php echo escape($komentar->getIme()) ?></h5>
                 <p class="card-text"><?php echo escape($komentar->getTekst()) ?></p>
                 <p class="card-text small"><?php echo $komentar->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i><?php echo $komentar->getDislajkovi()?><i class="bi bi-hand-thumbs-down-fill"></i></p>
+                <p class="card-text small">
+                    <span id="commentLikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getLajkovi() ?></span>
+                    <button id="commentLikeButton_<?php echo $komentar->getIdKomentar(); ?>" class="btn btn-link comment-like">Like</button>
+                    <span id="commentDislikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getDislajkovi() ?></span>
+                    <button id="commentDislikeButton_<?php echo $komentar->getIdKomentar(); ?>" class="btn btn-link comment-dislike">Dislike</button>
+                </p>
             </div>
         </div>
     <?php endforeach; ?>
@@ -155,6 +166,60 @@ require_once 'navbar.php';
                          '</div>');
   });
 </script>
+<script>
+    $(document).ready(function() {
+        $('#likeButton').click(function() {
+            $.ajax({
+                url: 'likeDislikeVest.php',
+                type: 'POST',
+                data: { vestId: <?php echo $vest_id; ?>, action: 'like' },
+                success: function(response) {
+                    $('#likesCount').text(response.likes);
+                    $('#dislikesCount').text(response.dislikes);
+                }
+            });
+        });
 
+        $('#dislikeButton').click(function() {
+            $.ajax({
+                url: 'likeDislikeVest.php',
+                type: 'POST',
+                data: { vestId: <?php echo $vest_id; ?>, action: 'dislike' },
+                success: function(response) {
+                    $('#likesCount').text(response.likes);
+                    $('#dislikesCount').text(response.dislikes);
+                }
+            });
+        });
+    });
+    $(document).ready(function() {
+        // Attach click event handlers to like and dislike buttons for each comment
+        $('.comment-like').click(function() {
+            var commentId = this.id.split('_')[1]; // Extract comment ID from button ID
+            $.ajax({
+                url: 'likeDislikeKomentar.php',
+                type: 'POST',
+                data: { commentId: commentId, action: 'like' },
+                success: function(response) {
+                    $('#commentLikesCount_' + commentId).text(response.likes);
+                    $('#commentDislikesCount_' + commentId).text(response.dislikes);
+                }
+            });
+        });
+
+        $('.comment-dislike').click(function() {
+            var commentId = this.id.split('_')[1]; // Extract comment ID from button ID
+            $.ajax({
+                url: 'likeDislikeKomentar.php',
+                type: 'POST',
+                data: { commentId: commentId, action: 'dislike' },
+                success: function(response) {
+                    $('#commentLikesCount_' + commentId).text(response.likes);
+                    $('#commentDislikesCount_' + commentId).text(response.dislikes);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

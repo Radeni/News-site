@@ -22,10 +22,9 @@ class VestDAO {
         if ($row) {
             return new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']);
         }
-
         return null;
     }
-
+    
     public function addVest($dbConnection, Vest $vest) {
         $query = "INSERT INTO Vest (Naslov, Tekst, Tagovi, Datum, Lajkovi, Dislajkovi, Status, idRubrika, idKorisnik) VALUES (:naslov, :tekst, :tagovi, :datum, :lajkovi, :dislajkovi, :status, :idRubrika, :idKorisnik)";
         $stmt = $dbConnection->prepare($query);
