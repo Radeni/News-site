@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'service/VestService.php';
+require_once 'service/RubrikaService.php';
 require_once 'service/KomentarService.php';
 require_once 'core/init.php';
 if(!Input::get('id'))
@@ -9,6 +10,7 @@ if(!Input::get('id'))
 }
 $vest_id = intval(Input::get('id'));
 $vest = VestService::getInstance()->getVestById($vest_id);
+$rubrika = RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika());
 $komentari = KomentarService::getInstance()->getAllKomentariByVestId($vest_id);
 require_once 'navbar.php';
 ?>
@@ -81,33 +83,57 @@ require_once 'navbar.php';
 </head>
 <body>
 <div class="container mt-4">
-<h2 class="card-title"><?php echo escape($vest->getNaslov())?></h2>
+<h1 class="card-title"><?php echo escape($vest->getNaslov())?></h1>
+<h3 class="card-title"><?php echo escape($rubrika->getIme())?></h3>
+    <?php
+    $userManager = new UserManager();
+    if($userManager->isLoggedIn()) {
+        $user = $userManager->data();
+        if($user->getIdKorisnik() === $vest->getIdKorisnik()) {
+            echo '<a href="editvest.php?id='.$vest_id.'" class="btn btn-dark">Izmeni Vest</a>';
+        }
+    }
+    ?>
+    
     <div class="col-md-8">
       <div class="card">
         <div class="card-body">
+          <p class="card-text"><?php echo escape($vest->getDatum()) ?></p>
+          <p class="card-text"><?php echo $vest->getTekst() ?></p>
+          <p class="card-text"><?php echo $vest->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i>    <?php echo $vest->getDislajkovi() ?><i class="bi bi-hand-thumbs-down-fill"></i></p>
           <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
-          <p class="card-text">Datum: <?php echo escape($vest->getDatum()) ?></p>
-          <p class="card-text">Lajkovi: <?php echo $vest->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i></p>
-          <p class="card-text">Dislajkovi: <?php echo $vest->getDislajkovi() ?><i class="bi bi-hand-thumbs-down-fill"></i></p>
-          <p class="card-text">Tekst: <?php echo $vest->getTekst() ?></p>
         </div>
       </div>
-    <div class="text-center">
-        <a href="editvest.php?id=<?php echo $vest_id?>" class="btn btn-dark">Izmeni Vest</a>
-    </div>
     </div>
 </div>
-
+<div class="container mt-4">
+        <h2>Post Comment</h2>
+        <form action="post_comment.php" method="POST">
+            <div class="mb-3">
+                <label for="commentAuthor" class="form-label">Your Name</label>
+                <input type="text" class="form-control" id="commentAuthor" name="commentAuthor" required>
+            </div>
+            <div class="mb-3">
+                <label for="commentText" class="form-label">Comment</label>
+                <textarea class="form-control" id="commentText" name="commentText" rows="3" required></textarea>
+            </div>
+            <input type="hidden" value="<?php echo $vest_id ?>"  name="vestId" class="box"/>
+            <input type="hidden" value="<?php echo Token::generate(); ?>"  name="token" class="box"/>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
 <!-- Prikaz komentara -->
 <div class="container mt-4">
+    
+
+
     <h2>Komentari</h2>
     <?php foreach ($komentari as $komentar): ?>
         <div class="card mb-2">
             <div class="card-body">
                 <h5 class="card-title"><?php echo escape($komentar->getIme()) ?></h5>
                 <p class="card-text"><?php echo escape($komentar->getTekst()) ?></p>
-                <p class="card-text small">Lajkovi: <?php echo $komentar->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i></p>
-                <p class="card-text small">Dislajkovi: <?php echo $komentar->getDislajkovi()?><i class="bi bi-hand-thumbs-down-fill"></i></p>
+                <p class="card-text small"><?php echo $komentar->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i><?php echo $komentar->getDislajkovi()?><i class="bi bi-hand-thumbs-down-fill"></i></p>
             </div>
         </div>
     <?php endforeach; ?>
