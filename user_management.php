@@ -2,15 +2,26 @@
 declare(strict_types=1);
 require_once 'core/init.php';
 $user = new UserManager();
-if($user->data()->getTip() != 'glavni_urednik')
-{
-  Redirect::to('index.php');
+if(!$user->isLoggedIn()) {
+    Redirect::to('index.php');
 }
-
-
+if($user->data()->getTip() != 'glavni_urednik' && $user->data()->getTip() != 'urednik') {
+    Redirect::to('index.php');
+}
 // Execute the prepared SQL statement
 $novinari = UserService::getInstance()->getAllUsers();
-//var_dump($novinari);
+function filterNovinari(array $users): array {
+    $novinaritemp = [];
+    foreach ($users as $user) {
+        if ($user->getTip() === 'novinar') {
+            $novinaritemp[] = $user;
+        }
+    }
+    return $novinaritemp;
+}
+if($user->data()->getTip() == 'urednik') {
+    $novinari = filterNovinari($novinari);
+}
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -84,7 +95,7 @@ require_once 'navbar.php';
 if (count($novinari) > 0) {
     foreach ($novinari as $novinar) {
         $tip = $novinar->getTip();
-        if ($tip != 'glavni_urednik'){
+        if ($tip != 'glavni_urednik') {
             echo '<div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-4">
@@ -104,23 +115,19 @@ if (count($novinari) > 0) {
         echo '<p class="card-text"><b>Vrsta novinara:</b> ' . $tip . '</p>';
         echo '<div class="text-center">
         <a href="manage_user.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-dark">Upravljaj Korisnikom</a>
-        </div>
-        <div class="text-center">
-            <a href="obrisi_korisnika.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
         </div>';
-/*if ($novinar->getIdKorisnik() == NULL){
-
-    echo '
-    <div class="text-center">
-        <a href="odobri_oglas.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-dark">Approve</a>
-    </div>';
-}*/
-echo '
-</div>
-</div>
-</div>
-</div>
-</div>';
+        if($user->data()->getTip() === 'glavni_urednik') {
+        echo '
+            <div class="text-center">
+                <a href="obrisi_korisnika.php?id=' . $novinar->getIdKorisnik() . '" class="btn btn-danger">Delete</a>
+            </div>';
+        }
+        echo '
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>';
 
         }
     }

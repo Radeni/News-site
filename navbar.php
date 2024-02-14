@@ -69,7 +69,7 @@ $user = new UserManager();
           <a class="nav-link" href="cars.php">Pretraga</a>
         </li>
         <?php
-        if(!$user->isLoggedIn()) { 
+        if(!$user->isLoggedIn()) {
             echo '<a class="nav-link" href="login.php">Prijava</a>';
         }
         else {
@@ -77,8 +77,15 @@ $user = new UserManager();
             if($user->data()->getTip() == 'glavni_urednik')
             {
               echo '<a class="nav-link" href="user_management.php">Upravljaj novinarima</a>';
+              echo '<a class="nav-link" href="pending_news.php">Clanci na cekanju</a>';
               echo '<a class="nav-link" href="register.php">Registruj novinara</a>';
-            } else
+            }
+            elseif($user->data()->getTip() == 'urednik')
+            {
+              echo '<a class="nav-link" href="user_management.php">Upravljaj novinarima</a>';
+              echo '<a class="nav-link" href="pending_news.php">Clanci na cekanju</a>';
+            }
+            elseif($user->data()->getTip() == 'novinar')
             {
               echo '<a class="nav-link" href="addVest.php">Napisi clanak</a>';
               echo '<a class="nav-link" href="moje_vesti.php">Moji clanci</a>';

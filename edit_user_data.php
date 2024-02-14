@@ -5,7 +5,10 @@ require_once 'service/UserRubrikaService.php';
 require_once 'core/init.php';
 
 $userManager = new UserManager();
-if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik') {
+if(!$userManager->isLoggedIn()) {
+    Redirect::to('index.php');
+}
+if($userManager->data()->getTip() != 'glavni_urednik' && $userManager->data()->getTip() != 'urednik') {
     Redirect::to('index.php');
 }
 $korisnik_id = Input::get('id');
@@ -13,48 +16,65 @@ if($korisnik_id == null) {
     Redirect::to('index.php');
 }
 $korisnik = UserService::getInstance()->getUserById($korisnik_id);
+if($korisnik->getTip() !== 'novinar' && $userManager->data()->getTip() === 'urednik') {
+    Redirect::to('index.php');
+}
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
-        $validate = new Validate();
-        $validation = $validate->check(
-            $_POST, array(
-            'firstname' => array(
-                'required' => true,
-                'min' => 2,
-                'max' => 45,
-            ),
-            'lastname' => array(
-                'required' => true,
-                'min' => 2,
-                'max' => 45,
-            ),
-            'telefon' => array(
-                'required' => true,
-                'min' => 5,
-                'max' => 12,
-            ),
-            'tip' => array(
-                'required' => true
-            ),
-            )
-        );
-        
-        if ($validation->passed()) {
+        if($userManager->data()->getTip() === 'glavni_urednik') {
+            $validate = new Validate();
+            $validation = $validate->check(
+                $_POST, array(
+                'firstname' => array(
+                    'required' => true,
+                    'min' => 2,
+                    'max' => 45,
+                ),
+                'lastname' => array(
+                    'required' => true,
+                    'min' => 2,
+                    'max' => 45,
+                ),
+                'telefon' => array(
+                    'required' => true,
+                    'min' => 5,
+                    'max' => 12,
+                ),
+                'tip' => array(
+                    'required' => true
+                ),
+                )
+            );
+            
+            if ($validation->passed()) {
+                try {
+                    $user = new User($korisnik_id, Input::get('username'),null, Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
+                    $userManager->update($user);
+                    UserRubrikaService::getInstance()->purgeUser($user->getIdKorisnik());
+                    foreach (Input::get('rubrike') as $rubrika) {
+                        UserRubrikaService::getInstance()->addUserToRubrika($user->getIdKorisnik(),$rubrika);
+                    }
+                    Redirect::to('manage_user.php?id=' . $korisnik_id);
+
+                } catch(Exception $e) {
+                    die($e->getMessage());
+                }
+            } else {
+                foreach($validation->errors() as $error) {
+                    echo $error, '<br>';
+                }
+            }
+        }
+        else {
             try {
-                $user = new User($korisnik_id, Input::get('username'),null, Input::get('firstname'), Input::get('lastname'), Input::get('telefon'), Input::get('tip'));
-                $userManager->update($user);
-                UserRubrikaService::getInstance()->purgeUser($user->getIdKorisnik());
+                UserRubrikaService::getInstance()->purgeUser($korisnik_id);
                 foreach (Input::get('rubrike') as $rubrika) {
-                    UserRubrikaService::getInstance()->addUserToRubrika($user->getIdKorisnik(),$rubrika);
+                    UserRubrikaService::getInstance()->addUserToRubrika($korisnik_id, $rubrika);
                 }
                 Redirect::to('manage_user.php?id=' . $korisnik_id);
 
             } catch(Exception $e) {
                 die($e->getMessage());
-            }
-        } else {
-            foreach($validation->errors() as $error) {
-                echo $error, '<br>';
             }
         }
     }
@@ -142,33 +162,42 @@ require_once 'navbar.php';
         </div>
         <form id="editDataForm" action="" method="post">
             <div class="input-container">
-                <div class="mb-3">
-                    <label for="firstname" class="form-label">Ime:</label>
-                    <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $korisnik->getIme()?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lastname" class="form-label">Prezime:</label>
-                    <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $korisnik->getPrezime()?>"required>
-                </div>
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username:</label>
-                    <input type="text" class="form-control" id="username" name="username" value="<?php echo $korisnik->getUsername()?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="telefon" class="form-label">Telefon:</label>
-                    <input type="text" class="form-control" id="telefon" name="telefon" value="<?php echo $korisnik->getTelefon()?>" required>
-                </div>
-                <div class="mb-3">
-                <label for="tip" class="form-label">Tip:</label>
-                <select class="form-select" id="tip" name="tip" required>
-                    <option <?php if ($korisnik->getTip() == 'novinar') echo 'selected'; ?> value="novinar">Novinar</option>
-                    <option <?php if ($korisnik->getTip() == 'urednik') echo 'selected'; ?> value="urednik">Urednik</option>
-                </select>
-                </div>
+                <?php
+                if($userManager->data()->getTip() === 'glavni_urednik') {
+                    echo '
+                        <div class="mb-3">
+                            <label for="firstname" class="form-label">Ime:</label>
+                            <input type="text" class="form-control" id="firstname" name="firstname" value="' . $korisnik->getIme() . '" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastname" class="form-label">Prezime:</label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" value="' . $korisnik->getPrezime() . '" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" value="' . $korisnik->getUsername() . '" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefon" class="form-label">Telefon:</label>
+                            <input type="text" class="form-control" id="telefon" name="telefon" value="' . $korisnik->getTelefon() . '" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tip" class="form-label">Tip:</label>
+                            <select class="form-select" id="tip" name="tip" required>
+                                <option ' . ($korisnik->getTip() == 'novinar' ? 'selected' : '') . ' value="novinar">Novinar</option>
+                                <option ' . ($korisnik->getTip() == 'urednik' ? 'selected' : '') . ' value="urednik">Urednik</option>
+                            </select>
+                        </div>';
+                }
+                ?>
                 <div class="mb-3">
                 <label for="tip" class="form-label">Rubrike:</label>
                 <?php
+                if($userManager->data()->getTip() === 'glavni_urednik') {
                     $rubrike = RubrikaService::getInstance()->getAllRubrikas();
+                } else {
+                    $rubrike = UserRubrikaService::getInstance()->getUserRubrikas($userManager->data()->getIdKorisnik());
+                }
                     if(count($rubrike) > 0) {
                         foreach($rubrike as $rubrika) {
                             echo    '<div>';
