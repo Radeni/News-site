@@ -22,7 +22,7 @@ $vesti = array();
 foreach($vesti_pre_rubrika as $vest) {
     if($rubrike_id && in_array($vest->getIdRubrika(), $rubrike_id)) {
         array_push($vesti, $vest);
-    } else {
+    } elseif(!$rubrike_id) {
         array_push($vesti, $vest);
     }
 }
