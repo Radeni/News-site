@@ -132,7 +132,8 @@ require_once 'navbar.php';
 <div class="container">
   <div class="row row-cols-1 row-cols-md-2 g-4">
     <?php foreach ($articles as $article): ?>
-      <?php if ($article->getStatus() === 'ODOBRENA' || $article->getStatus() === 'PENDING_DELETION'): ?>
+      <?php
+        if ($article->getStatus() === 'ODOBRENA' || $article->getStatus() === 'PENDING_DELETION'): ?>
         <div class="col mb-3">
           <div class="card h-100 article">
             <div class="card-body">
