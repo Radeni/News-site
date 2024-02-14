@@ -3,9 +3,9 @@ declare(strict_types=1);
 require_once 'core/init.php';
 require_once 'service/UserService.php';
 $userManager = new UserManager();
-//if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik') {
-//  Redirect::to('index.php');
-//}
+if(!$userManager->isLoggedIn() || $userManager->data()->getTip() != 'glavni_urednik' || $userManager->data()->getTip() != 'urednik') {
+  Redirect::to('index.php');
+}
 $korisnik_id = Input::get('id');
 if($korisnik_id == null) {
   Redirect::to('index.php');

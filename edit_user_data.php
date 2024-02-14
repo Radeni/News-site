@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once 'service/RubrikaService.php';
 require_once 'service/UserRubrikaService.php';
+require_once 'service/UserService.php';
 require_once 'core/init.php';
 
 $userManager = new UserManager();

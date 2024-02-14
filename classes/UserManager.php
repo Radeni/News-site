@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-require_once 'functions/user_type.php';
 require_once 'service/UserService.php';
 class UserManager
 {

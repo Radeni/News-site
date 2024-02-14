@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
-require_once 'service/UserService.php';
 
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {

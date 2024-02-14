@@ -8,6 +8,9 @@ if (!$user->isLoggedIn())
 {
     Redirect::to('index.php');
 }
+if(!Input::get('id')) {
+    Redirect::to('index.php');
+}
 $vest_id = Input::get('id');
 $vest = VestService::getInstance()->getVestById($vest_id);
 if($vest->getIdKorisnik() != $user->data()->getIdKorisnik()) {

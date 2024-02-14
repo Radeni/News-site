@@ -12,19 +12,15 @@ $vest_id = intval(Input::get('id'));
 $vest = VestService::getInstance()->getVestById($vest_id);
 $rubrika = RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika());
 $komentari = KomentarService::getInstance()->getAllKomentariByVestId($vest_id);
-// Define a custom comparison function
 function compareComments($comment1, $comment2) {
     $difference1 = $comment1->getLajkovi() - $comment1->getDislajkovi();
     $difference2 = $comment2->getLajkovi() - $comment2->getDislajkovi();
-    
-    // Sort in descending order based on the difference
     if ($difference1 === $difference2) {
         return 0;
     }
     return ($difference1 > $difference2) ? -1 : 1;
 }
 
-// Sort the comments array using the custom comparison function
 usort($komentari, 'compareComments');
 require_once 'navbar.php';
 ?>
