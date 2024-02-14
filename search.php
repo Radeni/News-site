@@ -26,6 +26,14 @@ foreach($vesti_pre_rubrika as $vest) {
         array_push($vesti, $vest);
     }
 }
+function sortVesti($vest1, $vest2) {
+  if ($vest1->getDatum() === $vest2->getDatum()) {
+      return 0;
+  }
+  return ($vest1->getDatum() > $vest2->getDatum()) ? -1 : 1;
+}
+
+usort($vesti, 'sortVesti');
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
