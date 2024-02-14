@@ -7,14 +7,26 @@ require_once 'core/init.php';
 $articlesPerPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $articlesPerPage;
+$currentRubrika = Input::get('idRubrika');
+if ($currentRubrika == null) {
+  $currentRubrika = 'all';
+}
+$totalArticles = 0;
+$totalPages = 0;
+$articles=null;
 
+if ($currentRubrika == 'all') {
 // Fetch total number of articles
 $totalArticles = VestService::getInstance()->countAll();
 $totalPages = ceil($totalArticles / $articlesPerPage);
 
 // Fetch news articles for the current page
 $articles = VestService::getInstance()->getArticlesByPage($page, $articlesPerPage);
-
+} else {
+  $totalArticles = VestService::getInstance()->countAllFromRubrika($currentRubrika);
+  $totalPages = ceil($totalArticles / $articlesPerPage);
+  $articles = VestService::getInstance()->getArticlesByPageFromRubrika($page, $articlesPerPage, $currentRubrika);
+};
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -71,10 +83,14 @@ require_once 'navbar.php';
 <!-- Categories Section -->
 <div class="container mt-3">
   <ul class="category-list">
-    <li><a href="category.php?id=all" class="category-link active">All Categories</a></li>
-    <li><a href="category.php?id=1" class="category-link">Category 1</a></li>
-    <li><a href="category.php?id=2" class="category-link">Category 2</a></li>
-    <li><a href="category.php?id=3" class="category-link">Category 3</a></li>
+    <li><a href="index.php?idRubrika=all" class="category-link <?php echo ($currentRubrika == 'all') ? 'active' : ''; ?>">Sve vesti</a></li>
+    <li><a href="index.php?idRubrika=1" class="category-link <?php echo ($currentRubrika == '1') ? 'active' : ''; ?>">Politika</a></li>
+    <li><a href="index.php?idRubrika=2" class="category-link <?php echo ($currentRubrika == '2') ? 'active' : ''; ?>">Svet</a></li>
+    <li><a href="index.php?idRubrika=3" class="category-link <?php echo ($currentRubrika == '3') ? 'active' : ''; ?>">Drustvo</a></li>
+    <li><a href="index.php?idRubrika=4" class="category-link <?php echo ($currentRubrika == '4') ? 'active' : ''; ?>">Sport</a></li>
+    <li><a href="index.php?idRubrika=5" class="category-link <?php echo ($currentRubrika == '5') ? 'active' : ''; ?>">Ukrajina</a></li>
+    <li><a href="index.php?idRubrika=6" class="category-link <?php echo ($currentRubrika == '6') ? 'active' : ''; ?>">Izrael</a></li>
+    <li><a href="index.php?idRubrika=7" class="category-link <?php echo ($currentRubrika == '7') ? 'active' : ''; ?>">Humor</a></li>
     <!-- Add more categories as needed -->
   </ul>
 </div>

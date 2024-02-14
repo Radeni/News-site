@@ -54,6 +54,40 @@ class VestDAO {
         }
         return $vesti;
     }
+    public function getArticlesByPageFromKorisnik($dbConnection, $page, $articlesPerPage, $id) {
+        $offset = ($page - 1) * $articlesPerPage;
+        
+        $query = "SELECT * FROM Vest WHERE idKorisnik=:id LIMIT :limit OFFSET :offset";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $articlesPerPage, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $vesti = array();
+        foreach ($rows as $row) {
+            array_push($vesti, new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']));
+        }
+        return $vesti;
+    }
+    public function getArticlesByPageFromRubrika($dbConnection, $page, $articlesPerPage, $id) {
+        $offset = ($page - 1) * $articlesPerPage;
+        
+        $query = "SELECT * FROM Vest WHERE idRubrika=:id LIMIT :limit OFFSET :offset";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $articlesPerPage, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $vesti = array();
+        foreach ($rows as $row) {
+            array_push($vesti, new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']));
+        }
+        return $vesti;
+    }
     public function getAllFromKorisnik($dbConnection, $id) {
         $query = "SELECT * FROM Vest WHERE idKorisnik=:id";
         $stmt = $dbConnection->prepare($query);

@@ -25,6 +25,14 @@ class VestService {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getArticlesByPage($connection ,$page, $articlesPerPage);
     }
+    public function getArticlesByPageFromKorisnik($page, $articlesPerPage, $id_korisnik) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getArticlesByPageFromKorisnik($connection ,$page, $articlesPerPage, $id_korisnik);
+    }
+    public function getArticlesByPageFromRubrika($page, $articlesPerPage, $id_rub) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getArticlesByPageFromRubrika($connection ,$page, $articlesPerPage, $id_rub);
+    }
     public function getAllFromKorisnik($id_korisnik) {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getAllFromKorisnik($connection, $id_korisnik);
