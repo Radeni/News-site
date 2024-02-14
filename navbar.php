@@ -66,7 +66,7 @@ $user = new UserManager();
           <a class="nav-link" href="index.php">Naslovna</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="cars.php">Pretraga</a>
+          <a class="nav-link" href="search.php">Pretraga</a>
         </li>
         <?php
         if(!$user->isLoggedIn()) {

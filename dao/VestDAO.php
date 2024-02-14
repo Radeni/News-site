@@ -12,7 +12,33 @@ class VestDAO {
         }
         return self::$instance;
     }
-
+    public function searchVest($dbConnection, $naslov, $tagovi, $start_date, $end_date) {
+        $query = "SELECT * FROM Vest WHERE LOWER(Naslov) LIKE :naslov AND LOWER(Tagovi) LIKE :tagovi";
+        if($start_date != null) {
+            $query .= " AND Date(Datum) >= :start_date";
+        }
+        if($end_date != null) {
+            $query .= " AND Date(Datum) <= :end_date";
+        }
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':naslov', $naslov, PDO::PARAM_STR);
+        $stmt->bindParam(':tagovi', $tagovi, PDO::PARAM_STR);
+        if($start_date != null) {
+            $stmt->bindParam(':start_date', $start_date, PDO::PARAM_STR);
+        }
+        if($end_date != null) {
+            $stmt->bindParam(':end_date', $end_date, PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        
+        // Fetch articles
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $vesti = array();
+        foreach ($rows as $row) {
+            array_push($vesti, new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']));
+        }
+        return $vesti;
+    }
     public function getVestById($dbConnection, $id) {
         $query = "SELECT * FROM Vest WHERE idVest = :id";
         $stmt = $dbConnection->prepare($query);

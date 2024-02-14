@@ -12,6 +12,10 @@ class VestService {
         }
         return self::$instance;
     }
+    public function searchVest($naslov, $tagovi, $start_date, $end_date) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->searchVest($connection, $naslov, $tagovi, $start_date, $end_date);
+    }
 
     public function getVestById($id) {
         $connection = DBManager::getInstance()->getConnection();
