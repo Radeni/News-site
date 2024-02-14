@@ -16,6 +16,7 @@ $totalPages = ceil($totalArticles / $articlesPerPage);
 $articles = VestService::getInstance()->getArticlesByPageFromKorisnik($page, $articlesPerPage, $korisnik_id);
 
 require_once 'navbar.php';
+require_once 'functions/truncate.php';
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
@@ -84,7 +85,7 @@ require_once 'navbar.php';
           <div class="card h-100 article">
             <div class="card-body">
               <h1 class="card-title"><?php echo $article->getNaslov(); ?></h1>
-              <p class="card-text"><?php echo substr($article->getTekst(), 0, 150) . '...'; ?></p>
+              <p class="card-text"><?php echo truncate($article->getTekst(), 250, '...', true, true); ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <i class="fas fa-thumbs-up"></i> <?php echo $article->getLajkovi(); ?>

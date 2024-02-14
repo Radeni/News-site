@@ -35,6 +35,7 @@ function sortVesti($vest1, $vest2) {
 
 usort($vesti, 'sortVesti');
 require_once 'navbar.php';
+require_once 'functions/truncate.php';
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -254,7 +255,7 @@ require_once 'navbar.php';
           <div class="card h-100 article">
             <div class="card-body">
               <h1 class="card-title"><?php echo $vest->getNaslov(); ?></h1>
-              <p class="card-text"><?php echo substr($vest->getTekst(), 0, 150) . '...'; ?></p>
+              <p class="card-text"><?php echo truncate($vest->getTekst(), 250, '...', true, true); ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <i class="fas fa-thumbs-up"></i> <?php echo $vest->getLajkovi(); ?>

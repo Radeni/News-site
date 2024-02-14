@@ -26,6 +26,7 @@ if($currentKorisnik->data()->getTip() == 'urednik')
 }
 
 require_once 'navbar.php';
+require_once 'functions/truncate.php';
 ?>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
@@ -94,7 +95,7 @@ require_once 'navbar.php';
           <div class="card h-100 article">
             <div class="card-body">
               <h1 class="card-title"><?php echo $article->getNaslov(); ?></h1>
-              <p class="card-text"><?php echo substr($article->getTekst(), 0, 150) . '...'; ?></p>
+              <p class="card-text"><?php echo truncate($article->getTekst(), 250, '...', true, true); ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <a href="vest.php?id=<?php echo $article->getIdVest(); ?>" class="btn btn-primary">Pregledaj</a>
                 <?php
