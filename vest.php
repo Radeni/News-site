@@ -157,7 +157,7 @@ require_once 'navbar.php';
     </div>
 <!-- Prikaz komentara -->
 <div class="container mt-4">
-    <h2>Komentari</h2>
+    <h2><?php if (count($komentari)>0){echo 'Komentari';}?></h2>
     <?php foreach ($komentari as $komentar): ?>
         <div class="card mb-2">
             <div class="card-body">

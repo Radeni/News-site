@@ -81,7 +81,7 @@ $user = new UserManager();
             } else
             {
               echo '<a class="nav-link" href="addVest.php">Napisi clanak</a>';
-              echo '<a class="nav-link" href="moje_vesti.php">Moji clanci</a>';
+              echo '<a class="nav-link" href="my_news.php">Moji clanci</a>';
             }
             echo '<a class="nav-link" href="logout.php">Logout</a>';
             
