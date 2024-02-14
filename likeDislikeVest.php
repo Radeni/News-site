@@ -11,12 +11,40 @@ if (Input::exists()) {
     if ($validation->passed()) {
         $action = Input::get('action');
         $vest_id = Input::get('vestId');
-        if(in_array($action, array('like','dislike'))) {
-            if($action === 'like') {
-                VestService::getInstance()->likeVest($vest_id);
+        $postojeciLajkoviDislajkovi = Session::exists('lajkoviDislajkoviVest') ? Session::get('lajkoviDislajkoviVest') : array();
+        
+        if (in_array($action, array('like','dislike'))) {
+            if ($action === 'like') {
+                if (isset($postojeciLajkoviDislajkovi[$vest_id])) {
+                    if ($postojeciLajkoviDislajkovi[$vest_id] === 'like') {
+                        exit;
+                    } elseif ($postojeciLajkoviDislajkovi[$vest_id] === 'dislike') {
+                        VestService::getInstance()->unDislikeVest($vest_id);
+                        VestService::getInstance()->likeVest($vest_id);
+                        $postojeciLajkoviDislajkovi[$vest_id] = 'like';
+                    }
+                } else {
+                    VestService::getInstance()->likeVest($vest_id);
+                    $postojeciLajkoviDislajkovi[$vest_id] = 'like';
+                }
             } else {
-                VestService::getInstance()->dislikeVest($vest_id);
+                if (isset($postojeciLajkoviDislajkovi[$vest_id])) {
+                    if ($postojeciLajkoviDislajkovi[$vest_id] === 'dislike') {
+                        exit;
+                    } elseif ($postojeciLajkoviDislajkovi[$vest_id] === 'like') {
+                        VestService::getInstance()->DislikeVest($vest_id);
+                        VestService::getInstance()->unlikeVest($vest_id);
+                        $postojeciLajkoviDislajkovi[$vest_id] = 'dislike';
+                    }
+                } else {
+                    VestService::getInstance()->likeVest($vest_id);
+                    $postojeciLajkoviDislajkovi[$vest_id] = 'dislike';
+                }
             }
+            
+            // Update session with updated likes and dislikes
+            Session::put('lajkoviDislajkoviVest', $postojeciLajkoviDislajkovi);
+            
             $vest = VestService::getInstance()->getVestById($vest_id);
             $response = [
                 'likes' => $vest->getLajkovi(),
@@ -30,10 +58,10 @@ if (Input::exists()) {
             echo json_encode($response);
             exit; // Stop further execution
         }
-
     } else {
         foreach ($validation->errors() as $error) {
             echo $error, '<br>';
         }
     }
 }
+?>
