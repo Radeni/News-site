@@ -7,10 +7,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('Europe/Belgrade');
 $GLOBALS['my_config'] = array(
     'mysql' => array(
-        'host' => 'localhost',
+        'host' => 'localhost', //this should be db for docker
         'port' => '3306',
-        'username' => 'root',
-        'password' => '',
+        'username' => 'root', // this should be user for docker
+        'password' => '',// this should be test for docker
         'db' => 'news'
     ),
     'session' => array(

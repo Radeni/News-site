@@ -42,7 +42,7 @@ if (Input::exists()) {
             'telefon' => array(
                 'required' => true,
                 'min' => 5,
-                'max' => 12,
+                'max' => 20,
             ),
             'tip' => array(
                 'required' => true
