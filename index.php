@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'service/VestService.php';
+require_once 'service/RubrikaService.php';
 require_once 'core/init.php';
 
 // Pagination variables
@@ -14,18 +15,20 @@ if ($currentRubrika == null) {
 $totalArticles = 0;
 $totalPages = 0;
 $articles=null;
+$header = 'Najnovije vesti:';
 
 if ($currentRubrika == 'all') {
 // Fetch total number of articles
 $totalArticles = VestService::getInstance()->countAll();
 $totalPages = ceil($totalArticles / $articlesPerPage);
-
+$header = 'Aktuelno';
 // Fetch news articles for the current page
 $articles = VestService::getInstance()->getArticlesByPage($page, $articlesPerPage);
 } else {
   $totalArticles = VestService::getInstance()->countAllFromRubrika($currentRubrika);
   $totalPages = ceil($totalArticles / $articlesPerPage);
   $articles = VestService::getInstance()->getArticlesByPageFromRubrika($page, $articlesPerPage, $currentRubrika);
+  $header = RubrikaService::getInstance()->getRubrikaById($currentRubrika)->getIme();
 };
 require_once 'navbar.php';
 ?>
@@ -97,7 +100,7 @@ require_once 'navbar.php';
 
 <!-- Space between categories and articles -->
 <div class="container mt-3">
-
+<h1><?php echo $header;?></h1>
 </div>
 
 <!-- Articles Section -->
