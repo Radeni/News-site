@@ -95,7 +95,7 @@ require_once 'navbar.php';
     }
     ?>
 
-    <div class="card"> <!-- Removed col-md-8 class -->
+    <div class="card">
         <div class="card-body">
             <p class="card-text"><?php echo escape($vest->getDatum()) ?></p>
             <p class="card-text"><?php echo $vest->getTekst() ?></p>
@@ -129,9 +129,6 @@ require_once 'navbar.php';
     </div>
 <!-- Prikaz komentara -->
 <div class="container mt-4">
-    
-
-
     <h2>Komentari</h2>
     <?php foreach ($komentari as $komentar): ?>
         <div class="card mb-2">
@@ -145,6 +142,13 @@ require_once 'navbar.php';
                     <span id="commentDislikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getDislajkovi() ?></span>
                     <button id="commentDislikeButton_<?php echo $komentar->getIdKomentar(); ?>" class="btn btn-link comment-dislike">Dislike</button>
                 </p>
+                <?PHP
+                if($userManager->isLoggedIn()) {
+                    if($userManager->data()->getTip() === 'glavni_urednik') {
+                        echo '<a href="obrisiKomentar.php?komentarId='.$komentar->getIdKomentar().'&vestId='.$vest->getIdVest().'" class="btn btn-dark">Obrisi komentar</a>';
+                    }
+                }
+                ?>
             </div>
         </div>
     <?php endforeach; ?>
