@@ -86,15 +86,17 @@ require_once 'navbar.php';
 <!-- Categories Section -->
 <div class="container mt-3">
   <ul class="category-list">
-    <li><a href="index.php?idRubrika=all" class="category-link <?php echo ($currentRubrika == 'all') ? 'active' : ''; ?>">Sve vesti</a></li>
-    <li><a href="index.php?idRubrika=1" class="category-link <?php echo ($currentRubrika == '1') ? 'active' : ''; ?>">Politika</a></li>
-    <li><a href="index.php?idRubrika=2" class="category-link <?php echo ($currentRubrika == '2') ? 'active' : ''; ?>">Svet</a></li>
-    <li><a href="index.php?idRubrika=3" class="category-link <?php echo ($currentRubrika == '3') ? 'active' : ''; ?>">Drustvo</a></li>
-    <li><a href="index.php?idRubrika=4" class="category-link <?php echo ($currentRubrika == '4') ? 'active' : ''; ?>">Sport</a></li>
-    <li><a href="index.php?idRubrika=5" class="category-link <?php echo ($currentRubrika == '5') ? 'active' : ''; ?>">Ukrajina</a></li>
-    <li><a href="index.php?idRubrika=6" class="category-link <?php echo ($currentRubrika == '6') ? 'active' : ''; ?>">Izrael</a></li>
-    <li><a href="index.php?idRubrika=7" class="category-link <?php echo ($currentRubrika == '7') ? 'active' : ''; ?>">Humor</a></li>
-    <!-- Add more categories as needed -->
+    <?php
+    $rubrike = RubrikaService::getInstance()->getAllRubrikas();
+    if(count($rubrike) > 0) {
+      echo '<li><a href="index.php?idRubrika=all" class="category-link ' . (($currentRubrika == 'all') ? 'active' : '') . '">Sve vesti</a></li>';
+      foreach($rubrike as $rubrika) {
+        echo '<li><a href="index.php?idRubrika='.$rubrika->getIdRubrika().'" class="category-link ' . (($currentRubrika == $rubrika->getIdRubrika()) ? 'active' : '') . '">'.$rubrika->getIme().'</a></li>';
+      }
+    } else {
+      echo 'NIJEDNA RUBRIKA NIJE U SISTEMU!!!!!!!!!';
+    }
+    ?>
   </ul>
 </div>
 
