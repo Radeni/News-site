@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once 'core/init.php';
+require_once 'service/UserService.php';
 $user = new UserManager();
 if(!$user->isLoggedIn()) {
     Redirect::to('index.php');

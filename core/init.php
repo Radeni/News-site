@@ -25,4 +25,3 @@ spl_autoload_register(
     }
 );
 require_once 'functions/sanitize.php';
-require_once 'functions/user_type.php';

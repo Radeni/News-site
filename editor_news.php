@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 require_once 'service/VestService.php';
-require_once 'service/RubrikaService.php';
 require_once 'service/UserRubrikaService.php';
 require_once 'core/init.php';
 

@@ -57,6 +57,11 @@ class KomentarService {
         return KomentarDAO::getInstance()->deleteKomentar($connection, $id);
     }
 
+    public function deleteAllKomentarsByVestId($vest_id) {
+        $connection = DBManager::getInstance()->getConnection();
+        return KomentarDAO::getInstance()->deleteAllKomentarsByVestId($connection, $vest_id);
+    }
+
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {

@@ -78,6 +78,15 @@ class KomentarDAO {
         $stmt->execute();
         return $stmt->rowCount();
     }
+
+    public function deleteAllKomentarsByVestId($dbConnection, $vest_id) {
+        $query = "DELETE FROM Komentar WHERE idVest = :id_vest";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':id_vest', $vest_id, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
     // Prevent cloning and unserialization
     private function __clone() { }
     public function __wakeup() {
