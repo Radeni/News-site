@@ -22,6 +22,9 @@ if($userManager->data()->getTip() === 'urednik' && !$rubrike) {
 if($userManager->data()->getTip() === 'urednik' && !in_array($vest_rubrika, $rubrike)) {
     Redirect::to('index.php');
 }
+if($vest->getStatus() == 'DRAFT_PENDING_APPROVAL') {
+    $vest->setDatum(date('Y-m-d'));
+}
 $vest->setStatus('ODOBRENA');
 VestService::getInstance()->updateVest($vest);
 Redirect::to('editor_news.php');
