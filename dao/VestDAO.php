@@ -77,7 +77,7 @@ class VestDAO {
         $offset = ($page - 1) * $articlesPerPage;
         
         // SQL query with LIMIT and OFFSET
-        $query = "SELECT * FROM Vest LIMIT :limit OFFSET :offset";
+        $query = "SELECT * FROM Vest ORDER BY Datum DESC LIMIT :limit OFFSET :offset";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':limit', $articlesPerPage, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -94,7 +94,7 @@ class VestDAO {
     public function getArticlesByPageFromKorisnik($dbConnection, $page, $articlesPerPage, $id) {
         $offset = ($page - 1) * $articlesPerPage;
         
-        $query = "SELECT * FROM Vest WHERE idKorisnik=:id LIMIT :limit OFFSET :offset";
+        $query = "SELECT * FROM Vest WHERE idKorisnik=:id ORDER BY Datum DESC LIMIT :limit OFFSET :offset";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $articlesPerPage, PDO::PARAM_INT);
@@ -111,7 +111,7 @@ class VestDAO {
     public function getArticlesByPageFromRubrika($dbConnection, $page, $articlesPerPage, $id) {
         $offset = ($page - 1) * $articlesPerPage;
         
-        $query = "SELECT * FROM Vest WHERE idRubrika=:id LIMIT :limit OFFSET :offset";
+        $query = "SELECT * FROM Vest WHERE idRubrika=:id ORDER BY Datum DESC LIMIT :limit OFFSET :offset";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $articlesPerPage, PDO::PARAM_INT);
@@ -126,7 +126,7 @@ class VestDAO {
         return $vesti;
     }
     public function getAllFromKorisnik($dbConnection, $id) {
-        $query = "SELECT * FROM Vest WHERE idKorisnik=:id";
+        $query = "SELECT * FROM Vest WHERE idKorisnik=:id ORDER BY Datum DESC";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -138,7 +138,7 @@ class VestDAO {
         return $vesti;
     }
     public function getAllFromRubrika($dbConnection, $id) {
-        $query = "SELECT * FROM Vest WHERE idRubrika=:id";
+        $query = "SELECT * FROM Vest WHERE idRubrika=:id ORDER BY Datum DESC";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -150,7 +150,7 @@ class VestDAO {
         return $vesti;
     }
     public function getAllPendingFromRubrika($dbConnection, $id) {
-        $query = "SELECT * FROM Vest WHERE idRubrika=:id AND (Status in ('DRAFT_PENDING_APPROVAL', 'PENDING_DELETION', 'DRAFT_PENDING_CHANGE'))";
+        $query = "SELECT * FROM Vest WHERE idRubrika=:id AND (Status in ('DRAFT_PENDING_APPROVAL', 'PENDING_DELETION', 'DRAFT_PENDING_CHANGE')) ORDER BY Datum DESC";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
