@@ -20,7 +20,9 @@ $vesti_pre_rubrika = VestService::getInstance()->searchVest($naslov, $tagovi, $s
 $rubrike_id = Input::get('dropdown-group');
 $vesti = array();
 foreach($vesti_pre_rubrika as $vest) {
-    if(in_array($vest->getIdRubrika(), $rubrike_id)) {
+    if($rubrike_id && in_array($vest->getIdRubrika(), $rubrike_id)) {
+        array_push($vesti, $vest);
+    } else {
         array_push($vesti, $vest);
     }
 }
