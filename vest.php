@@ -113,12 +113,26 @@ require_once 'navbar.php';
         <div class="card-body">
             <p class="card-text"><?php echo escape($vest->getDatum()) ?></p>
             <p class="card-text"><?php echo $vest->getTekst() ?></p>
-            <p class="card-text"><?php echo $vest->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i>    <?php echo $vest->getDislajkovi() ?><i class="bi bi-hand-thumbs-down-fill"></i></p>
             <p class="card-text">
                 <span id="likesCount"><?php echo $vest->getLajkovi() ?></span>
-                <button id="likeButton" class="btn btn-link"><i class="bi bi-hand-thumbs-up"></i></button>
+                <?php
+                    if(Session::exists('lajkoviDislajkoviVest') && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'like') {
+                        echo '<button id="likeButton" class="btn btn-link" onclick="likeClicked()"><i class="bi bi-hand-thumbs-up-fill"></i></button>';
+                    }
+                    else {
+                        echo '<button id="likeButton" class="btn btn-link" onclick="likeClicked()"><i class="bi bi-hand-thumbs-up"></i></button>';
+                    }
+                ?>
                 <span id="dislikesCount"><?php echo $vest->getDislajkovi() ?></span>
-                <button id="dislikeButton" class="btn btn-link"><i class="bi bi-hand-thumbs-down"></i></button>
+                <?php
+                    if(Session::exists('lajkoviDislajkoviVest') && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'dislike') {
+                        echo '<button id="dislikeButton" class="btn btn-link" onclick="dislikeClicked()"><i class="bi bi-hand-thumbs-down-fill"></i></button>';
+                    }
+                    else {
+                        echo '<button id="dislikeButton" class="btn btn-link" onclick="dislikeClicked()"><i class="bi bi-hand-thumbs-down"></i></button>';
+                    }
+                ?>
+                
             </p>
             <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
         </div>
@@ -149,14 +163,27 @@ require_once 'navbar.php';
             <div class="card-body">
                 <h5 class="card-title"><?php echo escape($komentar->getIme()) ?></h5>
                 <p class="card-text"><?php echo escape($komentar->getTekst()) ?></p>
-                <p class="card-text small"><?php echo $komentar->getLajkovi() ?><i class="bi bi-hand-thumbs-up-fill"></i><?php echo $komentar->getDislajkovi()?><i class="bi bi-hand-thumbs-down-fill"></i></p>
                 <p class="card-text small">
                     <span id="commentLikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getLajkovi() ?></span>
-                    <button id="commentLikeButton_<?php echo $komentar->getIdKomentar(); ?>" class="btn btn-link comment-like">Like</button>
+                    <?php
+                        if(Session::exists('lajkoviDislajkoviKomentari') && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'like') {
+                            echo '<button id="commentLikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-like" onclick="likeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-up-fill"></i></button>';
+                        }
+                        else {
+                            echo '<button id="commentLikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-like" onclick="likeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-up"></i></button>';
+                        }
+                    ?>
+                    <?php
+                        if(Session::exists('lajkoviDislajkoviKomentari') && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'dislike') {
+                            echo '<button id="commentDislikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-dislike" onclick="dislikeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-down-fill"></i></button>';
+                        }
+                        else {
+                            echo '<button id="commentDislikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-dislike" onclick="dislikeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-down"></i></button>';
+                        }
+                    ?>
                     <span id="commentDislikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getDislajkovi() ?></span>
-                    <button id="commentDislikeButton_<?php echo $komentar->getIdKomentar(); ?>" class="btn btn-link comment-dislike">Dislike</button>
                 </p>
-                <?PHP
+                <?php
                 if($userManager->isLoggedIn()) {
                     if($userManager->data()->getTip() === 'glavni_urednik') {
                         echo '<a href="obrisiKomentar.php?komentarId='.$komentar->getIdKomentar().'&vestId='.$vest->getIdVest().'" class="btn btn-dark">Obrisi komentar</a>';
@@ -185,6 +212,32 @@ require_once 'navbar.php';
   });
 </script>
 <script>
+    function likeClicked() {
+        // Update the button style or icon for liked state
+        document.getElementById('likeButton').innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
+        document.getElementById('dislikeButton').innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+    }
+
+    function dislikeClicked() {
+        // Update the button style or icon for disliked state
+        document.getElementById('dislikeButton').innerHTML = '<i class="bi bi-hand-thumbs-down-fill"></i>';
+        document.getElementById('likeButton').innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+    }
+
+    function likeComment(commentId) {
+        // Update the button style or icon for liked state
+        document.getElementById('commentLikeButton_' + commentId).innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
+        document.getElementById('commentDislikeButton_' + commentId).innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+        // You can also send an AJAX request to update the server-side data if needed
+    }
+
+    function dislikeComment(commentId) {
+        // Update the button style or icon for disliked state
+        document.getElementById('commentDislikeButton_' + commentId).innerHTML = '<i class="bi bi-hand-thumbs-down-fill"></i>';
+        document.getElementById('commentLikeButton_' + commentId).innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+        // You can also send an AJAX request to update the server-side data if needed
+    }
+
     $(document).ready(function() {
         $('#likeButton').click(function() {
             $.ajax({

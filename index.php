@@ -2,7 +2,6 @@
 declare(strict_types=1);
 require_once 'service/VestService.php';
 require_once 'core/init.php';
-$db = DBManager::getInstance();
 
 // Pagination variables
 $articlesPerPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 5;
@@ -30,7 +29,6 @@ require_once 'navbar.php';
   <!-- Custom CSS -->
   <style>
     /* Custom CSS */
-<style>
   /* Your CSS styles here */
   .category-list {
     list-style: none;
@@ -90,7 +88,7 @@ require_once 'navbar.php';
 <div class="container">
   <div class="row row-cols-1 row-cols-md-2 g-4">
     <?php foreach ($articles as $article): ?>
-      <?php if ($article->getStatus() === 'draft'): ?>
+      <?php if ($article->getStatus() === 'DRAFT'): ?>
         <div class="col mb-3">
           <div class="card h-100 article">
             <div class="card-body">
