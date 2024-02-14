@@ -137,7 +137,7 @@ require_once 'navbar.php';
           <div class="card h-100 article">
             <div class="card-body">
               <h1 class="card-title"><?php echo $article->getNaslov(); ?></h1>
-              <p class="card-text"><?php echo truncate($article->getTekst(), 150) . '...'; ?></p>
+              <p class="card-text"><?php echo truncate($article->getTekst(), 150, '...', true, true); ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <i class="fas fa-thumbs-up"></i> <?php echo $article->getLajkovi(); ?>
