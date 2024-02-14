@@ -17,7 +17,14 @@ $vest = VestService::getInstance()->getVestById($vest_id);
 if($vest->getIdKorisnik() != $user->data()->getIdKorisnik()) {
     Redirect::to('index.php');
 }
-KomentarService::getInstance()->deleteAllKomentarsByVestId($vest_id);
-VestService::getInstance()->deleteVest($vest_id);
+if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {
+    KomentarService::getInstance()->deleteAllKomentarsByVestId($vest_id);
+    VestService::getInstance()->deleteVest($vest_id);
+    Redirect::to('mojevesti.php');
+}
+else {
+    $vest->setStatus('PENDING_DELETION');
+    VestService::getInstance()->updateVest($vest);
+    Redirect::to('editvest.php?id=' . $vest_id);
+}
 
-Redirect::to('mojevesti.php');

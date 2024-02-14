@@ -61,8 +61,10 @@ if(Input::exists()) {
     }
     $purifier = new HTMLPurifier($config);
     $clean_html = $purifier->purify(Input::get('tekst'));
-    
     $vest->setTekst($clean_html);
+    if($vest->getStatus() !== 'DRAFT' || $vest->getStatus() !== 'DRAFT_PENDING_APPROVAL') {
+        $vest->setStatus('DRAFT_PENDING_CHANGE');
+    }
     VestService::getInstance()->updateVest($vest);
 }
 
@@ -85,8 +87,8 @@ require_once 'navbar.php';
           <p class="card-text">Datum: <?php echo escape($vest->getDatum())?></p>
           <p class="card-text">Rubrika: <?php echo escape(RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika())->getIme()) ?></p>
           <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
-          <a href="editvestnaslov.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Promeni Vest</a>
-          <a href="obrisivest.php?id=<?php echo $vest_id ?>" class="btn btn-danger">Obrisi Vest</a>
+          <a href="editvestnaslov.php?id=<?php echo $vest_id ?>" class="btn btn-dark"><?php if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {echo 'Promeni Vest';} else {echo 'Zahtev za promenu vesti';}?></a>
+          <a href="obrisivest.php?id=<?php echo $vest_id ?>" class="btn btn-danger"><?php if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {echo 'Obrisi Vest';} else {echo 'Zahtev za brisanje vesti';}?></a>
     <form id="editDataForm" action="" method="post">
         <textarea name="tekst" id="editor"><?php echo escape($vest->getTekst()) ?></textarea>
         <script>
@@ -104,9 +106,10 @@ require_once 'navbar.php';
                 });
             </script>
         <div>
-            <button type="submit" class="btn btn-dark" >Sacuvaj</button>
-            <a href="vest.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Pregledaj</a>
-            <a href="posalji_uredniku.php?id=<?php echo $vest_id ?>" class="btn btn-dark">Prosledi Uredniku</a>
+        <?php if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {echo '<button type="submit" class="btn btn-dark" >Sacuvaj</button>';} else {echo '<button type="submit" class="btn btn-dark" >Sacuvaj i posalji zahtev za promenu</button>';}?>
+            
+            <?php if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {echo '<a href="vest.php?id='.$vest_id.'" class="btn btn-dark">Pregledaj</a>';}?>
+            <?php if($vest->getStatus() === 'DRAFT' || $vest->getStatus() === 'DRAFT_PENDING_APPROVAL') {echo '<a href="posalji_uredniku.php?id='.$vest_id.'" class="btn btn-dark">Prosledi Uredniku</a>';}?>
         </div>
     </form>
 </body>

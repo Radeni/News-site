@@ -38,8 +38,10 @@ if (Input::exists()) {
                 $vest->setNaslov(Input::get('naslov'));
                 $vest->setTagovi(Input::get('tagovi'));
                 $vest->setIdRubrika(Input::get('rubrika'));
+                if($vest->getStatus() !== 'DRAFT' && $vest->getStatus() !== 'DRAFT_PENDING_APPROVAL') {
+                  $vest->setStatus('DRAFT_PENDING_CHANGE');
+                }
                 $vest_id = VestService::getInstance()->updateVest($vest);
-                die();
                 Redirect::to('editvest.php?id=' . $vest_id);
             } catch (Exception $e) {
                 die($e->getMessage());
@@ -162,7 +164,7 @@ require_once 'navbar.php';
         </div>
         <div class="text-center">
         <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-        <button type="submit" class="btn btn-dark">Dodaj Vest</button>
+        <button type="submit" class="btn btn-dark">Promeni Vest</button>
         </div>
       </div>
     </form>

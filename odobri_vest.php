@@ -16,7 +16,7 @@ if($vest_id == null) {
 $vest = VestService::getInstance()->getVestById($vest_id);
 $rubrike = UserRubrikaService::getInstance()->getUserRubrikas($userManager->data()->getIdKorisnik());
 $vest_rubrika = RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika());
-if(!$rubrike) {
+if($userManager->data()->getTip() === 'urednik' && !$rubrike) {
     Redirect::to('index.php');
 }
 if($userManager->data()->getTip() === 'urednik' && !in_array($vest_rubrika, $rubrike)) {
