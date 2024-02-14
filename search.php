@@ -26,9 +26,6 @@ foreach($vesti_pre_rubrika as $vest) {
         array_push($vesti, $vest);
     }
 }
-//var_dump($vesti);
-// Execute the prepared SQL statement
-//$oglasi = $db->query($sql, $bindings)->results();
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -115,6 +112,7 @@ require_once 'navbar.php';
             position: relative;
             font-size: 14px;
             color: #333;
+            z-index: 1000;
 
         .dropdown-list {
             padding: 12px;
@@ -129,6 +127,7 @@ require_once 'navbar.php';
             transition: transform .15s ease-in-out .15s;
             max-height: 66vh;
             overflow-y: scroll;
+            z-index: 100;
         }
         
         .dropdown-option {
@@ -266,39 +265,6 @@ require_once 'navbar.php';
     <?php endforeach; ?>
   </div>
 </div>
-<?php
-/*
-if (count($oglasi) > 0) {
-    foreach ($oglasi as $oglas) {
-        $korisnik = $db->get('korisnik', array('korisnik_id', '=', $oglas->korisnik_id))->first();
-        $slika_id = $db->get('oglas_ima_sliku', array('oglas_id', '=', $oglas->oglas_id))->first()->slika_id;
-        $slika_hash = $db->get('slika', array('slika_id', '=', $slika_id))->first()->hash;
-        $link = "car-details.php?id=" . strval($oglas->oglas_id);
-        echo '<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card car-card  mx-auto">';
-echo '<img src="slike_oglasa/' . $slika_hash . '" alt="Car Picture" class="card-img-top">';
-echo '<div class="card-body">';
-echo '<h5 class="card-title"><b>Model:</b> ' . $oglas->marka . " " .  $oglas->model . '</h5>';
-echo '<p class="card-text"><b>Year:</b> ' . $oglas->godiste . '.</p>';
-echo '<p class="card-text"><b>Price:</b> ' . $oglas->cena . '</p>';
-echo '<div class="text-center">
-    <a href="' . $link . '" class="btn btn-dark">View Details</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>';
-
-    }
-}
-                
-                    
-      */             
-                    
-?>
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
