@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `news`.`Vest` (
   `idRubrika` INT NOT NULL,
   `idKorisnik` INT NOT NULL,
   PRIMARY KEY (`idVest`, `idRubrika`, `idKorisnik`),
-  UNIQUE INDEX `idVest_UNIQUE` (`idVest` ASC, `Tagovi` ASC) VISIBLE,
+  UNIQUE INDEX `idVest_UNIQUE` (`idVest` ASC, `Tagovi` ASC, `Datum` ASC, `Naslov` ASC) VISIBLE,
   INDEX `fk_Vest_Rubrika1_idx` (`idRubrika` ASC) VISIBLE,
   INDEX `fk_Vest_User1_idx` (`idKorisnik` ASC) VISIBLE,
   CONSTRAINT `fk_Vest_Rubrika1`

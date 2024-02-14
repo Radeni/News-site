@@ -97,6 +97,17 @@ require_once 'navbar.php';
               <p class="card-text"><?php echo substr($article->getTekst(), 0, 150) . '...'; ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <a href="vest.php?id=<?php echo $article->getIdVest(); ?>" class="btn btn-primary">Pregledaj</a>
+                <?php
+                if($article->getStatus() == 'DRAFT_PENDING_APPROVAL') {
+                  echo '<a href="odobri_vest.php?id='.$article->getIdVest().'" class="btn btn-danger">Odobri vest</a>';
+                }
+                elseif($article->getStatus() == 'DRAFT_PENDING_CHANGE') {
+                  echo '<a href="odobri_vest.php?id='.$article->getIdVest().'" class="btn btn-danger">Odobri izmenu</a>';
+                }
+                elseif($article->getStatus() == 'PENDING_DELETION') {
+                  echo '<a href="obrisi_vest_po_zahtevu.php?id='.$article->getIdVest().'" class="btn btn-danger">Odobri brisanje</a>';
+                }
+                ?>
               </div>
             </div>
           </div>
