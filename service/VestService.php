@@ -25,6 +25,10 @@ class VestService {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getAll($connection);
     }
+    public function getAllPending() {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getAllPending($connection);
+    }
     public function getArticlesByPage($page, $articlesPerPage) {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getArticlesByPage($connection ,$page, $articlesPerPage);
@@ -44,6 +48,10 @@ class VestService {
     public function getAllFromRubrika($id_rub) {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getAllFromRubrika($connection, $id_rub);
+    }
+    public function getAllPendingFromRubrika($id_rub) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getAllPendingFromRubrika($connection, $id_rub);
     }
     public function countAll() {
         $connection = DBManager::getInstance()->getConnection();

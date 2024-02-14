@@ -61,6 +61,17 @@ class VestDAO {
         }
         return $vesti;
     }
+    public function getAllPending($dbConnection) {
+        $query = "SELECT * FROM Vest WHERE Status='DRAFT_PENDING_APPROVAL'";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $vesti = array();
+        foreach ($rows as $row) {
+           array_push($vesti, new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']));
+        }
+        return $vesti;
+    }
     public function getArticlesByPage($dbConnection, $page, $articlesPerPage) {
         // Calculate offset based on the current page and articles per page
         $offset = ($page - 1) * $articlesPerPage;
@@ -128,6 +139,18 @@ class VestDAO {
     }
     public function getAllFromRubrika($dbConnection, $id) {
         $query = "SELECT * FROM Vest WHERE idRubrika=:id";
+        $stmt = $dbConnection->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $vesti = array();
+        foreach ($rows as $row) {
+           array_push($vesti, new Vest($row['idVest'], $row['Naslov'], $row['Tekst'], $row['Tagovi'], $row['Datum'], $row['Lajkovi'], $row['Dislajkovi'], $row['Status'], $row['idRubrika'], $row['idKorisnik']));
+        }
+        return $vesti;
+    }
+    public function getAllPendingFromRubrika($dbConnection, $id) {
+        $query = "SELECT * FROM Vest WHERE idRubrika=:id AND Status='DRAFT_PENDING_APPROVAL'";
         $stmt = $dbConnection->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

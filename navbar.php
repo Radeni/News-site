@@ -77,13 +77,13 @@ $user = new UserManager();
             if($user->data()->getTip() == 'glavni_urednik')
             {
               echo '<a class="nav-link" href="user_management.php">Upravljaj novinarima</a>';
-              echo '<a class="nav-link" href="pending_news.php">Clanci na cekanju</a>';
+              echo '<a class="nav-link" href="editor_news.php">Clanci na cekanju</a>';
               echo '<a class="nav-link" href="register.php">Registruj novinara</a>';
             }
             elseif($user->data()->getTip() == 'urednik')
             {
               echo '<a class="nav-link" href="user_management.php">Upravljaj novinarima</a>';
-              echo '<a class="nav-link" href="pending_news.php">Clanci na cekanju</a>';
+              echo '<a class="nav-link" href="editor_news.php">Clanci na cekanju</a>';
             }
             elseif($user->data()->getTip() == 'novinar')
             {
