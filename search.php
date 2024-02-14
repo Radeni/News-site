@@ -104,10 +104,6 @@ require_once 'navbar.php';
             color: #379937;
         }
 
-        body {
-            margin: 40px;
-        }
-
         .dropdown {
             position: relative;
             font-size: 14px;
@@ -245,7 +241,7 @@ require_once 'navbar.php';
 <div class="container">
   <div class="row row-cols-1 row-cols-md-2 g-4">
     <?php foreach ($vesti as $vest): ?>
-      <?php if ($vest->getStatus() === 'DRAFT'): ?>
+      <?php if ($vest->getStatus() === 'ODOBRENA' || $vest->getStatus() === 'PENDING_DELETION'): ?>
         <div class="col mb-3">
           <div class="card h-100 article">
             <div class="card-body">
