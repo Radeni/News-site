@@ -116,7 +116,7 @@ require_once 'navbar.php';
             <p class="card-text">
                 <span id="likesCount"><?php echo $vest->getLajkovi() ?></span>
                 <?php
-                    if(Session::exists('lajkoviDislajkoviVest') && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'like') {
+                    if(Session::exists('lajkoviDislajkoviVest') && isset(Session::get('lajkoviDislajkoviVest')[$vest_id]) && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'like') {
                         echo '<button id="likeButton" class="btn btn-link" onclick="likeClicked()"><i class="bi bi-hand-thumbs-up-fill"></i></button>';
                     }
                     else {
@@ -125,7 +125,7 @@ require_once 'navbar.php';
                 ?>
                 <span id="dislikesCount"><?php echo $vest->getDislajkovi() ?></span>
                 <?php
-                    if(Session::exists('lajkoviDislajkoviVest') && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'dislike') {
+                    if(Session::exists('lajkoviDislajkoviVest') && isset(Session::get('lajkoviDislajkoviVest')[$vest_id]) && Session::get('lajkoviDislajkoviVest')[$vest_id] === 'dislike') {
                         echo '<button id="dislikeButton" class="btn btn-link" onclick="dislikeClicked()"><i class="bi bi-hand-thumbs-down-fill"></i></button>';
                     }
                     else {
@@ -166,7 +166,7 @@ require_once 'navbar.php';
                 <p class="card-text small">
                     <span id="commentLikesCount_<?php echo $komentar->getIdKomentar(); ?>"><?php echo $komentar->getLajkovi() ?></span>
                     <?php
-                        if(Session::exists('lajkoviDislajkoviKomentari') && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'like') {
+                        if(Session::exists('lajkoviDislajkoviKomentari') && isset(Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()]) && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'like') {
                             echo '<button id="commentLikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-like" onclick="likeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-up-fill"></i></button>';
                         }
                         else {
@@ -174,7 +174,7 @@ require_once 'navbar.php';
                         }
                     ?>
                     <?php
-                        if(Session::exists('lajkoviDislajkoviKomentari') && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'dislike') {
+                        if(Session::exists('lajkoviDislajkoviKomentari') && isset(Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()]) && Session::get('lajkoviDislajkoviKomentari')[$komentar->getIdKomentar()] === 'dislike') {
                             echo '<button id="commentDislikeButton_'.$komentar->getIdKomentar().'" class="btn btn-link comment-dislike" onclick="dislikeComment('.$komentar->getIdKomentar().')"><i class="bi bi-hand-thumbs-down-fill"></i></button>';
                         }
                         else {

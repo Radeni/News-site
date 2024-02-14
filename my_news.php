@@ -91,6 +91,7 @@ require_once 'navbar.php';
                   <i class="fas fa-thumbs-down"></i> <?php echo $article->getDislajkovi(); ?>
                 </div>
                 <a href="vest.php?id=<?php echo $article->getIdVest(); ?>" class="btn btn-primary">Read More</a>
+                <a href="editvest.php?id=<?php echo $article->getIdVest(); ?>" class="btn btn-dark">Izmeni Vest</a>';
               </div>
             </div>
           </div>
