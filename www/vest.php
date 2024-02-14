@@ -20,7 +20,6 @@ function compareComments($comment1, $comment2) {
     }
     return ($difference1 > $difference2) ? -1 : 1;
 }
-
 usort($komentari, 'compareComments');
 require_once 'navbar.php';
 ?>

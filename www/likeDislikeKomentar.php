@@ -37,7 +37,7 @@ if (Input::exists()) {
                         $postojeciLajkoviDislajkovi[$komentar_id] = 'dislike';
                     }
                 } else {
-                    KomentarService::getInstance()->likeKomentar($komentar_id);
+                    KomentarService::getInstance()->DislikeKomentar($komentar_id);
                     $postojeciLajkoviDislajkovi[$komentar_id] = 'dislike';
                 }
             }

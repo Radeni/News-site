@@ -37,7 +37,7 @@ if (Input::exists()) {
                         $postojeciLajkoviDislajkovi[$vest_id] = 'dislike';
                     }
                 } else {
-                    VestService::getInstance()->likeVest($vest_id);
+                    VestService::getInstance()->DislikeVest($vest_id);
                     $postojeciLajkoviDislajkovi[$vest_id] = 'dislike';
                 }
             }
