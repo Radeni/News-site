@@ -17,6 +17,34 @@ class VestService {
         $connection = DBManager::getInstance()->getConnection();
         return VestDAO::getInstance()->getVestById($connection, $id);
     }
+    public function getAll() {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getAll($connection);
+    }
+    public function getArticlesByPage($page, $articlesPerPage) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getArticlesByPage($connection ,$page, $articlesPerPage);
+    }
+    public function getAllFromKorisnik($id_korisnik) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getAllFromKorisnik($connection, $id_korisnik);
+    }
+    public function getAllFromRubrika($id_rub) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->getAllFromRubrika($connection, $id_rub);
+    }
+    public function countAll() {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->countAll($connection);
+    }
+    public function countAllFromKorisnik($id_korisnik) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->countAllFromKorisnik($connection, $id_korisnik);
+    }
+    public function countAllFromRubrika($id_rub) {
+        $connection = DBManager::getInstance()->getConnection();
+        return VestDAO::getInstance()->countAllFromRubrika($connection, $id_rub);
+    }
 
     public function createVest(Vest $vest) {
         $connection = DBManager::getInstance()->getConnection();

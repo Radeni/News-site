@@ -1,9 +1,21 @@
 <?php
 declare(strict_types=1);
+require_once 'service/VestService.php';
 require_once 'core/init.php';
 $db = DBManager::getInstance();
-// Execute the prepared SQL statement
-$oglas = null;//$db->query("SELECT * FROM oglasi WHERE admin_id IS NOT NULL ORDER BY RAND() LIMIT 1")->first();
+
+// Pagination variables
+$articlesPerPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 5;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $articlesPerPage;
+
+// Fetch total number of articles
+$totalArticles = VestService::getInstance()->countAll();
+$totalPages = ceil($totalArticles / $articlesPerPage);
+
+// Fetch news articles for the current page
+$articles = VestService::getInstance()->getArticlesByPage($page, $articlesPerPage);
+
 require_once 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -13,136 +25,129 @@ require_once 'navbar.php';
   <title>Home</title>
   <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
-  <!-- Include Toastr CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  <!-- Include jQuery library -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Include Toastr JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  <!-- Include jQuery library -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include FontAwesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <!-- Custom CSS -->
   <style>
-    .navbar {
-      background-color: #212529;
-    }
+    /* Custom CSS */
+<style>
+  /* Your CSS styles here */
+  .category-list {
+    list-style: none;
+    padding: 0;
+  }
 
-    .navbar-brand {
-      color: #f8f9fa;
-      font-weight: bold;
-    }
+  .category-list li {
+    display: inline-block;
+    margin-right: 10px;
+  }
 
-    .navbar-nav .nav-link {
-      color: #f8f9fa;
-    }
+  .category-link {
+    color: #444; /* Dark grey color */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s; /* Smooth color transition */
+  }
 
-    .navbar-nav .nav-link:hover {
-      color: #adb5bd;
-    }
+  .category-link:hover {
+    color: #888; /* Light grey color */
+  }
 
-    .navbar-nav .active {
-      font-weight: bold;
-    }
-
-    h1 {
-      color: #343a40;
-      font-weight: bold;
-    }
-
-    p {
-      color: #343a40;
-    }
-
-    .hero-section {
-      background-size: cover;
-      background-position: center;
-      height: 500px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: #ffffff;
-    }
-
-    .hero-section h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-
-    .hero-section p {
-      font-size: 24px;
-      margin-bottom: 40px;
-    }
-
-    body {
-      background-color: #f7f7f7;
-    }
-
-    #addCarButton {
-      margin-top: 20px;
-    }
-
-    #addCarButton .btn {
-      font-weight: bold;
-      font-size: 18px;
-      padding: 10px 20px;
-    }
-    #adminButton {
-      margin-top: 20px;
-    }
-
-    #adminButton .btn {
-      font-weight: bold;
-      font-size: 18px;
-      padding: 10px 20px;
-    }
-  </style>
+  .category-link.active {
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
 
-<section class="hero-section">
-  <div class="container">
-    <h1 class="display-4">Welcome to Used Cars</h1>
-    <p class="lead">Discover amazing cars and find your perfect match.</p>
-  </div>
-</section>
-
-<div class="row justify-content-center">
-</div>
-<?php
-        $slika_id = $db->get('oglas_ima_sliku', array('oglas_id', '=', $oglas->oglas_id))->first()->slika_id;
-        $slika_hash = $db->get('slika', array('slika_id', '=', $slika_id))->first()->hash;
-        $link = "car-details.php?id=" . strval($oglas->oglas_id);
-        echo '<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card car-card  mx-auto">';
-echo '<img src="slike_oglasa/' . $slika_hash . '" alt="Car Picture" class="card-img-top">';
-echo '<div class="card-body">';
-echo '<h5 class="card-title"><b>Model:</b> ' . $oglas->marka . " " .  $oglas->model . '</h5>';
-echo '<p class="card-text"><b>Year:</b> ' . $oglas->godiste . '.</p>';
-echo '<p class="card-text"><b>Price:</b> ' . $oglas->cena . '</p>';
-echo '<div class="text-center">
-    <a href="' . $link . '" class="btn btn-dark">View Details</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>';
-?>
+<!-- Your navigation bar -->
 <!-- Include Bootstrap JS (Optional) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Include FontAwesome JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 <script>
-  $(document).ready(function() {
-    var entryDropdown = $('#entryDropdown');
-      entryDropdown.html('<a class="nav-link dropdown-toggle" href="#" id="entryDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>' +
-                         '<div class="dropdown-menu dropdown-menu-end" aria-labelledby="entryDropdown">' +
-                         '  <a class="dropdown-item" href="login.php">Login</a>' +
-                         '  <a class="dropdown-item" href="register.php">Register</a>' +
-                         '</div>');
-  });
+  // Your JavaScript code here
+</script>
+</body>
+</html>
+
+<!-- Categories Section -->
+<div class="container mt-3">
+  <ul class="category-list">
+    <li><a href="category.php?id=all" class="category-link active">All Categories</a></li>
+    <li><a href="category.php?id=1" class="category-link">Category 1</a></li>
+    <li><a href="category.php?id=2" class="category-link">Category 2</a></li>
+    <li><a href="category.php?id=3" class="category-link">Category 3</a></li>
+    <!-- Add more categories as needed -->
+  </ul>
+</div>
+
+<!-- Space between categories and articles -->
+<div class="container mt-3">
+
+</div>
+
+<!-- Articles Section -->
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <?php foreach ($articles as $article): ?>
+      <?php if ($article->getStatus() === 'draft'): ?>
+        <div class="col mb-3">
+          <div class="card h-100 article">
+            <div class="card-body">
+              <h1 class="card-title"><?php echo $article->getNaslov(); ?></h1>
+              <p class="card-text"><?php echo substr($article->getTekst(), 0, 150) . '...'; ?></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="fas fa-thumbs-up"></i> <?php echo $article->getLajkovi(); ?>
+                  <i class="fas fa-thumbs-down"></i> <?php echo $article->getDislajkovi(); ?>
+                </div>
+                <a href="vest.php?id=<?php echo $article->getIdVest(); ?>" class="btn btn-primary">Read More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+    <?php endforeach; ?>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?php echo ($page === $i) ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $i; ?>&per_page=<?php echo $articlesPerPage; ?>"><?php echo $i; ?></a></li>
+          <?php endfor; ?>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Dropdown menu for selecting number of articles per page -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <form action="" method="GET" class="form-inline">
+        <label for="per_page">Articles Per Page:</label>
+        <select name="per_page" id="per_page" class="form-control ml-2" onchange="this.form.submit()">
+          <option value="5" <?php echo ($articlesPerPage == 5) ? 'selected' : ''; ?>>5</option>
+          <option value="10" <?php echo ($articlesPerPage == 10) ? 'selected' : ''; ?>>10</option>
+          <option value="20" <?php echo ($articlesPerPage == 20) ? 'selected' : ''; ?>>20</option>
+        </select>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Include Bootstrap JS (Optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Include FontAwesome JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+  // Your JavaScript code here
 </script>
 </body>
 </html>
