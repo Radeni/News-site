@@ -62,7 +62,7 @@ if(Input::exists()) {
     $purifier = new HTMLPurifier($config);
     $clean_html = $purifier->purify(Input::get('tekst'));
     $vest->setTekst($clean_html);
-    if($vest->getStatus() !== 'DRAFT' || $vest->getStatus() !== 'DRAFT_PENDING_APPROVAL') {
+    if($vest->getStatus() !== 'DRAFT' && $vest->getStatus() !== 'DRAFT_PENDING_APPROVAL') {
         $vest->setStatus('DRAFT_PENDING_CHANGE');
     }
     VestService::getInstance()->updateVest($vest);
@@ -83,7 +83,7 @@ require_once 'navbar.php';
 </head>
 <body>
     <h5 class="card-title"><?php echo escape($vest->getNaslov())?></h5>
-          <hr> 
+          <hr>
           <p class="card-text">Datum: <?php echo escape($vest->getDatum())?></p>
           <p class="card-text">Rubrika: <?php echo escape(RubrikaService::getInstance()->getRubrikaById($vest->getIdRubrika())->getIme()) ?></p>
           <p class="card-text">Tagovi: <?php echo escape($vest->getTagovi()) ?></p>
