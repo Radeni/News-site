@@ -213,7 +213,7 @@ require_once 'navbar.php';
                     }
                     else {
                         echo    '<div>';
-                        echo    'NE POSTOJI NI JEDNA RUBRIKA U SISTEMU!!!!!!!!!!';
+                        echo    'NIJE VAM DODELJENA NIJEDNA RUBRIKA!!!!!!!!!!';
                         echo    '</div>';
                     }
                 ?>

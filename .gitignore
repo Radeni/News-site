@@ -1,0 +1,8 @@
+
+www/vendor/bin/.phpunit.result.cache
+www/vendor/composer/autoload_classmap.php
+www/vendor/composer/autoload_files.php
+www/vendor/composer/autoload_psr4.php
+www/vendor/composer/autoload_static.php
+www/vendor/composer/installed.json
+www/vendor/composer/installed.php

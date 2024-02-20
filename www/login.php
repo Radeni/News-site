@@ -6,14 +6,14 @@ if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
-            'email' => array('required' => true),
+            'username' => array('required' => true),
             'password' => array('required' => true)
         ));
 
         if ($validation->passed()) {
             // Login user
             $userManager = new UserManager();
-            $user = $userManager->login(Input::get('email'), Input::get('password'));
+            $user = $userManager->login(Input::get('username'), Input::get('password'));
 
             if ($user) {
                 Redirect::to('index.php');
@@ -110,8 +110,8 @@ require_once 'navbar.php';
   <form id="loginForm" action="" method="post">
     <div class="input-container">
       <div class="mb-3">
-        <label for="text" class="form-label">Email:</label>
-        <input type="text" class="form-control" id="email" name="email" required>
+        <label for="text" class="form-label">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" required>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password:</label>

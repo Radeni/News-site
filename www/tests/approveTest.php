@@ -6,13 +6,15 @@ use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../service/VestService.php';
 require_once __DIR__ . '/../service/RubrikaService.php';
 require_once __DIR__ . '/../core/init.php';
-//require_once __DIR__ . '/../odobri_vest.php';
 
 class approveTest extends TestCase
 {
+
     // Test for the approval process
     public function testNewsArticleApproval(): void
     {
+        $vest = new Vest(null, 'test', 'test', 'test', date('Y-m-d'), 0, 0, 'DRAFT_PENDING_APPROVAL', 1, 1);
+        $vest_id = VestService::getInstance()->createVest($vest);
         // Mock UserManager and its isLoggedIn() and data() methods
         $userManagerMock = $this->createMock(UserManager::class);
         $userManagerMock->method('isLoggedIn')->willReturn(true);
@@ -23,7 +25,7 @@ class approveTest extends TestCase
         $userManagerMock->method('data')->willReturn($userMock);
 
         // Mock Input::get() to return a valid vest_id
-        $_GET['id'] = 1;
+        //$_GET['id'] = 1;
 
         // Mock VestService to return a valid vest object for the given vest_id
         $vestServiceMock = $this->createMock(VestService::class);
@@ -38,10 +40,10 @@ class approveTest extends TestCase
         // Expect the Redirect::to() method to be called with the expected URL
 
         // Execute the approval script
-        include '../odobri_vest.php';
-
+        include '../odobri_vest.php?id=' . $vest_id;
+        $vest = VestService::getInstance()->getVestById($vest_id);
         // Assert that the necessary methods or functions are called with the expected parameters
-        $this->assertTrue($vest->getStatus() === 'ODOBRENA');
+        $this->assertSame('ODOBRENA', $vest->getStatus());
     }
 }
 ?>
